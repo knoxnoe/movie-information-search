@@ -5,7 +5,6 @@
             class="el-menu-demo"
             mode="horizontal"
             @select="handleSelect"
-            router = true
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b">
@@ -16,12 +15,12 @@
                 <el-badge :value="3" class="bdgeitem"> 发现 </el-badge>
             </el-menu-item>
             <el-menu-item class="login">
-                <span @click='dialogFormVisiblesignin = true'>登陆 </span>
+                <span @click='dialogFormVisibleSignin = true'>登陆 </span>
                 <i>|</i>
-                <span @click='dialogFormVisiblesignup = true'> 注册</span>
+                <span @click='dialogFormVisibleSignup = true'> 注册</span>
             </el-menu-item>
         </el-menu>
-        <el-dialog title='登陆' :visible.sync='dialogFormVisiblesignin' center>
+        <el-dialog title='登陆' v-loading="loading" :visible.sync='dialogFormVisibleSignin' center>
             <el-form :model='formsignin' ref="formsignin" status-icon :rules="rulessignin">
                 <el-form-item :label-width='formLabelWidth' prop="user">
                     <el-input v-model='formsignin.user' placeholder="请输入用户名"></el-input>
@@ -41,7 +40,7 @@
             </div>
         </el-dialog>
     <!-- 弹出窗口进行注册 -->
-        <el-dialog title='注册' v-loading="loading" :visible.sync='dialogFormVisiblesignup' center>
+        <el-dialog title='注册' :visible.sync='dialogFormVisibleSignup' center>
             <el-form :model='formsignup' ref="formsignup" status-icon :rules="rulessignup">
                 <el-form-item :label-width='formLabelWidth' prop="user">
                     <el-input v-model='formsignup.user' placeholder="请输入用户名"></el-input>
@@ -81,6 +80,7 @@
 </template>
 <script>
 // import Dialogs from '@/components/dialogs.vue'
+import { mapMutations } from 'vuex'
 export default {
     name: 'Nav',
     data () {
@@ -102,9 +102,9 @@ export default {
             }
         };
         return {
-            activeIndex: '/',
-            dialogFormVisiblesignin: false,
-            dialogFormVisiblesignup: false,
+            activeIndex: this.$store.state.PageState.hashUrl,
+            dialogFormVisibleSignin: false,
+            dialogFormVisibleSignup: false,
             dialogFormVisibleforgetpwd: false,
             formsignin: {
                 user: '',
@@ -134,33 +134,45 @@ export default {
             loading: false
         }  
     },
+    mounted() {
+        console.log('fsdf')
+        console.log(this.$store.state.PageState.hashUrl)
+        this.activeIndex = this.$store.state.PageState.hashUrl
+    },
     methods: {
         opendialog(){
             this.isOpen = true;
         },
-        handleSelect(){
-            console.log(this.$store.state.BaseConfig.httpsurl)
+        handleSelect(item){
+            this.$router.push({ path: item })
+            this.saveHashUrl(item)
+            console.log(this.$store.state.PageState.hashUrl)
         },
+        ...mapMutations(['saveHashUrl']),
         signin (formName) {//登陆
+            this.loading = true
             this.$refs[formName].validate((valid) => {//验证表单是否合规
-                if (valid) {
-                    this.loading = true
-                    // this.dialogFormVisiblesignin = false
-                    // var PostUrl = this.$store.state.httpsurl + '/api/v1/login/'
-                    // this.axios.post(PostUrl, {
-                    //     username: this.formsignin.user,
-                    //     nickname: this.form.nickname,
-                    //     password: this.formsignin.user,
-                    // }).then(response => {
-                    //     response = response.data;
-                    //     if (response.status === 201) {
-                    //         alert("Register success")
-                    //     } else {
-                    //         alert(JSON.stringify(response.statusMessage));
-                    //     }
-                    // })
-                    this.$router.push({name: 'user'})//, params: {searchtext: this.state}
+                if (valid) {              
+                    var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/login/'
+                    this.axios.post(PostUrl, {
+                        username: this.formsignin.user,
+                        password: this.formsignin.pwd,
+                    }).then(response => {
+                        response = response.data
+                        if (response.status === 200) {
+                            this.$cookie.set('token', response.token, 1);
+                            console.log(this.$cookie.get('token'))
+                            setTimeout( () => {
+                                this.loading = false
+                                this.dialogFormVisibleSignin = false
+                                this.$router.push({name: 'user'})
+                            },400)
+                            //, params: {searchtext: this.state}
+                        } else {
+                        }
+                    })     
                 } else {
+                    this.loading = false
                     return false
                 }
             });
@@ -168,18 +180,17 @@ export default {
         signup (formName) {//注册
             this.$refs[formName].validate((valid) => {//验证表单是否合规
                 if (valid) {
-                    this.loading = true
-                    // this.dialogFormVisiblesignin = false
-                    var PostUrl = this.$store.state.BaseConfig.httpsurl + '/api/v1/join/'
-                    this.axios.post(PostUrl, {
-                        username: this.formsignup.user,
-                        nickname: 'noe',
-                        password: this.formsignup.pwd,
+                    var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/join/'
+                    console.log(this.formsignup.user);
+                    this.axios.post(PostUrl,{
+                        'username': this.formsignup.user,
+                        'nickname': 'noe',
+                        'password': this.formsignup.pwd,
                     }).then(response => {
                         response = response.data;
-                        
                         if (response.status === 200) {
-                            // this.loading = true
+                            this.dialogFormVisibleSignup = false //关闭注册dialog
+                            this.dialogFormVisibleSignin = true  //打开登陆dialog
                             this.$router.push({name: 'user'})
                         } else {
                             alert(JSON.stringify(response.statusMessage));
@@ -191,7 +202,7 @@ export default {
             });
         },
         forgetPwd () {//找回密码
-            this.dialogFormVisiblesignin = false
+            this.dialogFormVisibleSignin = false
             this.dialogFormVisibleforgetpwd = true
         }
     }

@@ -26,12 +26,12 @@ export default new Router({
     {
       path: '/user',
       name: 'user',
-      component: () => import('./views/user.vue')
+      component: () => import('./views/User.vue')
     },
     {
       path: '/find',
       name: 'find',
-      component: () => import('./views/find.vue')
+      component: () => import('./views/Find.vue')
     }
   ]
 })

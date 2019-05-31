@@ -9,29 +9,32 @@
                 {{'列表内容 ' + o }}
             </div>
         </el-card>
+        <div class="loadmore">
+          <span>加载更多</span>
+        </div>
     </div>
 </template>
 <script>
 export default {
-    name: 'List',
-    data () {
-      return {
-        list: [{
-          name: 'hantiaotiao',
-          id: '0'
-        },{
-          name: 'Lucien',
-          id: '1'
-        },{
-          name: 'noe',
-          id: '3'
-        },
-        {
-          name: 'noe',
-          id: '4'
-        }]
-      }
+  name: 'List',
+  data () {
+    return {
+      list: [{
+        name: 'hantiaotiao',
+        id: '0'
+      },{
+        name: 'Lucien',
+        id: '1'
+      },{
+        name: 'noe',
+        id: '3'
+      },
+      {
+        name: 'noe',
+        id: '4'
+      }]
     }
+  }
 }
 </script>
 <style lang="stylus">
@@ -47,4 +50,7 @@ body
     .clearfix
       .text
         color: red
+  .loadmore
+    text-align center
+    height 50px
 </style>
