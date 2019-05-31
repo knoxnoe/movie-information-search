@@ -1,6 +1,7 @@
 <template>
     <div class="nav">
         <el-menu
+            v-loading="loading"
             :default-active="activeIndex"
             class="el-menu-demo"
             mode="horizontal"
@@ -15,18 +16,23 @@
                 <el-badge :value="3" class="bdgeitem"> 发现 </el-badge>
             </el-menu-item>
             <el-menu-item class="login">
-                <span @click='dialogFormVisibleSignin = true'>登陆 </span>
-                <i>|</i>
-                <span @click='dialogFormVisibleSignup = true'> 注册</span>
+                <div v-if="logonStatus">
+                    <span>已登录</span>
+                </div>
+                <div v-else>
+                    <span @click='dialogFormVisibleSignin = true'>登陆</span>
+                    <span @click='dialogFormVisibleSignup = true'>注册</span>
+                </div>
+                
             </el-menu-item>
         </el-menu>
-        <el-dialog title='登陆' v-loading="loading" :visible.sync='dialogFormVisibleSignin' center>
+        <el-dialog title='登陆' :visible.sync='dialogFormVisibleSignin' center>
             <el-form :model='formsignin' ref="formsignin" status-icon :rules="rulessignin">
                 <el-form-item :label-width='formLabelWidth' prop="user">
                     <el-input v-model='formsignin.user' placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth' prop="pwd" >
-                    <el-input v-model='formsignin.pwd' type="password" placeholder="请输入密码"></el-input>
+                    <el-input v-model='formsignin.pwd' type="password" placeholder="请输入密码" show-password></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth'>
                     <el-button class="signin" @click="signin('formsignin')">登录</el-button>
@@ -46,7 +52,7 @@
                     <el-input v-model='formsignup.user' placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth' prop="pwd">
-                    <el-input v-model='formsignup.pwd' placeholder="请输入密码"></el-input>
+                    <el-input v-model='formsignup.pwd' placeholder="请输入密码" show-password></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth'>
                     <el-button class="signup" @click="signup('formsignup')">注册</el-button>
@@ -60,26 +66,25 @@
             </div>
         </el-dialog>
     <!-- 忘记密码 -->
-        <el-dialog title='找回密码' :visible.sync='dialogFormVisibleforgetpwd' center>
-            <el-form :model='formsignup' ref="formsignup" status-icon :rules="rulessignup">
+        <!-- <el-dialog title='找回密码' :visible.sync='dialogFormVisibleforgetPwd' center>
+            <el-form :model='formforgetPwd' ref="formforgetPwd" status-icon :rules="rulessignup">
                 <el-form-item :label-width='formLabelWidth' prop="user">
-                <el-input v-model='formsignup.user' autocomplete='off' placeholder="请输入手机号">
+                <el-input v-model='formforgetPwd.user' placeholder="请输入手机号">
                     <template slot="prepend">+86</template>
                 </el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth' prop="pwd">
-                <el-input class="checkpas" v-model='formsignup.pwd' autocomplete='off' placeholder="请输入验证码"></el-input>
-                <el-button class="" @click='dialogFormVisibleforgetpwd = false'>发送验证码</el-button>
+                <el-input class="checkpas" v-model='forgetPwd.pwd' placeholder="请输入验证码"></el-input>
+                <el-button class="" @click='dialogFormVisibleforgetPwd = false'>发送验证码</el-button>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth'>
-                <el-button class="signin" @click='dialogFormVisibleforgetpwd = false'>找回</el-button>
+                <el-button class="forgetPwd" @click='dialogFormVisibleforgetPwd = false'>找回</el-button>
                 </el-form-item>
             </el-form>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 <script>
-// import Dialogs from '@/components/dialogs.vue'
 import { mapMutations } from 'vuex'
 export default {
     name: 'Nav',
@@ -105,7 +110,7 @@ export default {
             activeIndex: this.$store.state.PageState.hashUrl,
             dialogFormVisibleSignin: false,
             dialogFormVisibleSignup: false,
-            dialogFormVisibleforgetpwd: false,
+            dialogFormVisibleforgetPwd: false,
             formsignin: {
                 user: '',
                 pwd: ''
@@ -134,21 +139,27 @@ export default {
             loading: false
         }  
     },
-    mounted() {
-        console.log('fsdf')
-        console.log(this.$store.state.PageState.hashUrl)
-        this.activeIndex = this.$store.state.PageState.hashUrl
+    computed:{
+        logonStatus: function(){
+            console.log(this.$store.state.UserState.logonStatus)
+            return this.$store.state.UserState.logonStatus
+        }
+    },
+    mounted(){
+        this.judgeLogonStatus()
+        console.log(this.$store.state.UserState.logonStatus)
     },
     methods: {
-        opendialog(){
-            this.isOpen = true;
-        },
         handleSelect(item){
             this.$router.push({ path: item })
             this.saveHashUrl(item)
-            console.log(this.$store.state.PageState.hashUrl)
         },
-        ...mapMutations(['saveHashUrl']),
+        ...mapMutations(
+            'PageState',['saveHashUrl']
+        ),
+        ...mapMutations(
+            'UserState',['judgeLogonStatus']
+        ),
         signin (formName) {//登陆
             this.loading = true
             this.$refs[formName].validate((valid) => {//验证表单是否合规
@@ -160,12 +171,13 @@ export default {
                     }).then(response => {
                         response = response.data
                         if (response.status === 200) {
-                            this.$cookie.set('token', response.token, 1);
-                            console.log(this.$cookie.get('token'))
-                            setTimeout( () => {
+                            this.$cookie.set('token', response.token, 1)
+                            this.judgeLogonStatus()
+                            console.log('1')
+                            console.log(this.$store.state.UserState.logonStatus)
+                            setTimeout(() => {
                                 this.loading = false
                                 this.dialogFormVisibleSignin = false
-                                this.$router.push({name: 'user'})
                             },400)
                             //, params: {searchtext: this.state}
                         } else {
@@ -181,19 +193,18 @@ export default {
             this.$refs[formName].validate((valid) => {//验证表单是否合规
                 if (valid) {
                     var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/join/'
-                    console.log(this.formsignup.user);
                     this.axios.post(PostUrl,{
                         'username': this.formsignup.user,
                         'nickname': 'noe',
                         'password': this.formsignup.pwd,
                     }).then(response => {
+                        console.log(response)
                         response = response.data;
                         if (response.status === 200) {
                             this.dialogFormVisibleSignup = false //关闭注册dialog
                             this.dialogFormVisibleSignin = true  //打开登陆dialog
-                            this.$router.push({name: 'user'})
                         } else {
-                            alert(JSON.stringify(response.statusMessage));
+                            console.log(JSON.stringify(response.statusMessage));
                         }
                     })
                 } else {
@@ -203,7 +214,7 @@ export default {
         },
         forgetPwd () {//找回密码
             this.dialogFormVisibleSignin = false
-            this.dialogFormVisibleforgetpwd = true
+            this.dialogFormVisibleforgetPwd = true
         }
     }
 }
@@ -216,6 +227,10 @@ body
     .login
         position absolute
         right 20px
+        span
+            height 100%
+            width 40px
+            display inline-block
     .bdgeitem
         .el-badge__content.is-fixed
             top 10px
