@@ -24,16 +24,16 @@
         <el-dialog title='登陆' :visible.sync='dialogFormVisiblesignin' center>
             <el-form :model='formsignin' ref="formsignin" status-icon :rules="rulessignin">
                 <el-form-item :label-width='formLabelWidth' prop="user">
-                <el-input v-model='formsignin.user' autocomplete='off' placeholder="请输入用户名"></el-input>
+                    <el-input v-model='formsignin.user' placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth' prop="pwd" >
-                <el-input v-model='formsignin.pwd' type="password" autocomplete='off' placeholder="请输入密码"></el-input>
+                    <el-input v-model='formsignin.pwd' type="password" placeholder="请输入密码"></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth'>
-                <el-button class="signin" @click="signin('formsignin')">登陆</el-button>
+                    <el-button class="signin" @click="signin('formsignin')">登录</el-button>
                 </el-form-item><span class="forgetPwd" @click="forgetPwd">忘记密码</span>
             </el-form>
-            <div slot='footer' class='dialog-footer thirdpartys'>
+            <div slot='footer' class='dialog-footer thirdpartys' >
                 <span>使用第三方登陆账号</span>
                 <img class="thirdparty" src="../assets/QQ.png" alt="#">
                 <img class="thirdparty" src="../assets/weixin.png" alt="#">
@@ -41,16 +41,16 @@
             </div>
         </el-dialog>
     <!-- 弹出窗口进行注册 -->
-        <el-dialog title='注册' :visible.sync='dialogFormVisiblesignup' center>
+        <el-dialog title='注册' v-loading="loading" :visible.sync='dialogFormVisiblesignup' center>
             <el-form :model='formsignup' ref="formsignup" status-icon :rules="rulessignup">
                 <el-form-item :label-width='formLabelWidth' prop="user">
-                <el-input v-model='formsignup.user' autocomplete='off' placeholder="请输入用户名"></el-input>
+                    <el-input v-model='formsignup.user' placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth' prop="pwd">
-                <el-input v-model='formsignup.pwd' autocomplete='off' placeholder="请输入密码"></el-input>
+                    <el-input v-model='formsignup.pwd' placeholder="请输入密码"></el-input>
                 </el-form-item>
                 <el-form-item :label-width='formLabelWidth'>
-                <el-button class="signin" @click='dialogFormVisiblesignin = false'>注册</el-button>
+                    <el-button class="signup" @click="signup('formsignup')">注册</el-button>
                 </el-form-item>
             </el-form>
             <div slot='footer' class='dialog-footer thirdpartys'>
@@ -130,7 +130,8 @@ export default {
                 {validator: validatePass, trigger: 'blur'}
                 ]
             },
-            formLabelWidth: '10px'
+            formLabelWidth: '10px',
+            loading: false
         }  
     },
     methods: {
@@ -138,13 +139,52 @@ export default {
             this.isOpen = true;
         },
         handleSelect(){
-            
+            console.log(this.$store.state.BaseConfig.httpsurl)
         },
         signin (formName) {//登陆
             this.$refs[formName].validate((valid) => {//验证表单是否合规
                 if (valid) {
-                    this.dialogFormVisiblesignin = false
+                    this.loading = true
+                    // this.dialogFormVisiblesignin = false
+                    // var PostUrl = this.$store.state.httpsurl + '/api/v1/login/'
+                    // this.axios.post(PostUrl, {
+                    //     username: this.formsignin.user,
+                    //     nickname: this.form.nickname,
+                    //     password: this.formsignin.user,
+                    // }).then(response => {
+                    //     response = response.data;
+                    //     if (response.status === 201) {
+                    //         alert("Register success")
+                    //     } else {
+                    //         alert(JSON.stringify(response.statusMessage));
+                    //     }
+                    // })
                     this.$router.push({name: 'user'})//, params: {searchtext: this.state}
+                } else {
+                    return false
+                }
+            });
+        },
+        signup (formName) {//注册
+            this.$refs[formName].validate((valid) => {//验证表单是否合规
+                if (valid) {
+                    this.loading = true
+                    // this.dialogFormVisiblesignin = false
+                    var PostUrl = this.$store.state.BaseConfig.httpsurl + '/api/v1/join/'
+                    this.axios.post(PostUrl, {
+                        username: this.formsignup.user,
+                        nickname: 'noe',
+                        password: this.formsignup.pwd,
+                    }).then(response => {
+                        response = response.data;
+                        
+                        if (response.status === 200) {
+                            // this.loading = true
+                            this.$router.push({name: 'user'})
+                        } else {
+                            alert(JSON.stringify(response.statusMessage));
+                        }
+                    })
                 } else {
                     return false
                 }
@@ -173,9 +213,9 @@ body
             padding 0 4px
     .el-form
         padding: 0 160px;
-        .signin
+        .signin,.signup
             width 100%
-            background-color #010101
+            background-color rgb(84, 92, 100)
             color rgb(251, 251, 251)
         .forgetPwd
             cursor pointer

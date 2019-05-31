@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>圈子里的那点事</h1>
     <List></List>
   </div>
 </template>
@@ -13,4 +13,8 @@ export default {
 }
 </script>
 <style lang="stylus">
+body
+  margin 0px
+.about
+  padding 20px 40px
 </style>

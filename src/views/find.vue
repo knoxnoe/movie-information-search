@@ -6,7 +6,6 @@
 <script>
 export default {
   updated(){
-      console.log('find')
   }
 }
 </script>

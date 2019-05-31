@@ -51,8 +51,7 @@ export default {
         { "value": "南拳妈妈龙虾盖浇饭", "address": "普陀区金沙江路1699号鑫乐惠美食广场A13" }
       ];
     },
-    handleSelect(item) {
-      console.log(item);
+    handleSelect() {
     }
   },
   mounted() {
