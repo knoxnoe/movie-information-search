@@ -11,6 +11,29 @@ import List from '@/components/list.vue'
 export default {
   components:{
     List
+  },
+  data () {
+    return {
+
+    }
+  },
+  methods:{
+    getFindList(){
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/join/'
+      this.axios.post(PostUrl,{
+          'username': this.formsignup.user,
+          'nickname': 'noe',
+          'password': this.formsignup.pwd,
+      }).then(response => {
+          response = response.data;
+          if (response.status === 200) {
+              this.dialogFormVisibleSignup = false //关闭注册dialog
+              this.dialogFormVisibleSignin = true  //打开登陆dialog
+          } else {
+              alert(JSON.stringify(response.statusMessage))
+          }
+      })
+    }
   }
 }
 </script>

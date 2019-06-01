@@ -6,7 +6,8 @@ var VueCookie = require('vue-cookie')
 const BaseConfig = {//一些全局变量（关于配置...）
   namespaced: true,
   state: {
-    httpsUrl: 'http://editme.top:8000'
+    httpsUrl: 'http://editme.top:8000',
+    loadListNum: 10
   },
   mutations: {
 
@@ -22,11 +23,13 @@ const BaseConfig = {//一些全局变量（关于配置...）
 const UserState = {//登陆用户状态管理
   namespaced: true,
   state: {
-    logonStatus: false
+    logonStatus: false,
+    token: ''
   },
   mutations: {
     judgeLogonStatus(state){
       if(VueCookie.get('token')){
+        state.token = VueCookie.get('token')
         state.logonStatus = true
       }else{
         state.logonStatus = false

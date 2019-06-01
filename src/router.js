@@ -24,14 +24,19 @@ export default new Router({
       // component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/user',
-      name: 'user',
-      component: () => import('./views/User.vue')
+      path: '/bookMark',
+      name: 'bookMark',
+      component: () => import('./views/UserBookMark.vue')
     },
     {
       path: '/find',
       name: 'find',
       component: () => import('./views/Find.vue')
+    },
+    {
+      path: '/concern',
+      name: 'concern',
+      component: () => import('./views/UserConcern.vue')
     }
   ]
 })

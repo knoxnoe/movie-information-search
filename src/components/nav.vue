@@ -1,7 +1,6 @@
 <template>
     <div class="nav">
         <el-menu
-            v-loading="loading"
             :default-active="activeIndex"
             class="el-menu-demo"
             mode="horizontal"
@@ -15,9 +14,17 @@
             <el-menu-item index="/find">
                 <el-badge :value="3" class="bdgeitem"> 发现 </el-badge>
             </el-menu-item>
-            <el-menu-item class="login">
-                <div v-if="logonStatus">
-                    <span>已登录</span>
+            <el-menu-item class="login" disabled>
+                <div v-if="logonStatus" class="user">
+                    <el-dropdown @command="handleCommand">
+                        <span class="el-dropdown-link">
+                            <i class="el-icon-user-solid"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="/bookMark" divided>收藏夹</el-dropdown-item>
+                            <el-dropdown-item command="/concern" divided>我的关注</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </div>
                 <div v-else>
                     <span @click='dialogFormVisibleSignin = true'>登陆</span>
@@ -26,7 +33,7 @@
                 
             </el-menu-item>
         </el-menu>
-        <el-dialog title='登陆' :visible.sync='dialogFormVisibleSignin' center>
+        <el-dialog title='登陆' v-loading="loading" :visible.sync='dialogFormVisibleSignin' center>
             <el-form :model='formsignin' ref="formsignin" status-icon :rules="rulessignin">
                 <el-form-item :label-width='formLabelWidth' prop="user">
                     <el-input v-model='formsignin.user' placeholder="请输入用户名"></el-input>
@@ -86,6 +93,8 @@
 </template>
 <script>
 import { mapMutations } from 'vuex'
+let timer
+let lastTime
 export default {
     name: 'Nav',
     data () {
@@ -107,7 +116,6 @@ export default {
             }
         };
         return {
-            activeIndex: this.$store.state.PageState.hashUrl,
             dialogFormVisibleSignin: false,
             dialogFormVisibleSignup: false,
             dialogFormVisibleforgetPwd: false,
@@ -141,24 +149,60 @@ export default {
     },
     computed:{
         logonStatus: function(){
-            console.log(this.$store.state.UserState.logonStatus)
             return this.$store.state.UserState.logonStatus
+        },
+        activeIndex: function(){
+            return this.$store.state.PageState.hashUrl
         }
     },
     mounted(){
         this.judgeLogonStatus()
-        console.log(this.$store.state.UserState.logonStatus)
     },
     methods: {
+        open() {
+            var throt = function(){
+                const h = this.$createElement;
+                this.$notify({
+                title: '请先登陆',
+                message: h('i', { style: 'color: teal'}, '请先登陆')
+                });
+            }
+            this.throttle(throt,this,500)
+        },
+        throttle(fun,context,delay){ //函数节流
+            let that = this
+            let now = +new Date();
+            if(lastTime && lastTime - now < 2000){
+                clearTimeout(timer)
+            }
+            timer = setTimeout(() => {
+                fun.apply(context)
+                lastTime = +new Date()
+            },delay)
+        },
+        toUser(){
+            this.$router.push({ path: '/user' })
+        },
         handleSelect(item){
-            this.$router.push({ path: item })
-            this.saveHashUrl(item)
+            if(item =='/about'){
+                console.log(this.$store.state.UserState.logonStatus)
+                if(this.$store.state.UserState.logonStatus){
+                    this.$router.push({ path: item })
+                    this.saveHashUrl(item)
+                }else{
+                    this.open()
+                }
+            }else{
+                this.saveHashUrl(item)
+                this.$router.push({ path: item })
+            }
+            
         },
         ...mapMutations(
             'PageState',['saveHashUrl']
         ),
         ...mapMutations(
-            'UserState',['judgeLogonStatus']
+            'UserState',['judgeLogonStatus','setToken']
         ),
         signin (formName) {//登陆
             this.loading = true
@@ -173,14 +217,14 @@ export default {
                         if (response.status === 200) {
                             this.$cookie.set('token', response.token, 1)
                             this.judgeLogonStatus()
-                            console.log('1')
-                            console.log(this.$store.state.UserState.logonStatus)
+                            this.setToken(response.token)
                             setTimeout(() => {
                                 this.loading = false
                                 this.dialogFormVisibleSignin = false
                             },400)
                             //, params: {searchtext: this.state}
                         } else {
+                            alert(JSON.stringify(response.statusMessage))
                         }
                     })     
                 } else {
@@ -198,13 +242,12 @@ export default {
                         'nickname': 'noe',
                         'password': this.formsignup.pwd,
                     }).then(response => {
-                        console.log(response)
                         response = response.data;
                         if (response.status === 200) {
                             this.dialogFormVisibleSignup = false //关闭注册dialog
                             this.dialogFormVisibleSignin = true  //打开登陆dialog
                         } else {
-                            console.log(JSON.stringify(response.statusMessage));
+                            alert(JSON.stringify(response.statusMessage))
                         }
                     })
                 } else {
@@ -215,6 +258,9 @@ export default {
         forgetPwd () {//找回密码
             this.dialogFormVisibleSignin = false
             this.dialogFormVisibleforgetPwd = true
+        },
+        handleCommand(command) {
+            this.$router.push({ path: command })
         }
     }
 }
@@ -224,9 +270,14 @@ export default {
 body
   margin 0px
 .nav
+    .el-menu-item.is-disabled
+        opacity 1
+        cursor default
     .login
         position absolute
         right 20px
+        .user
+            text-align center
         span
             height 100%
             width 40px
