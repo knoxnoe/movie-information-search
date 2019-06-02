@@ -27,8 +27,8 @@ export default {
       }).then(response => {
           response = response.data;
           if (response.status === 200) {
-              this.dialogFormVisibleSignup = false //关闭注册dialog
-              this.dialogFormVisibleSignin = true  //打开登陆dialog
+              this.dialogFormVisibleSignup = false //关闭注册 dialog
+              this.dialogFormVisibleSignin = true  //打开登陆 dialog
           } else {
               alert(JSON.stringify(response.statusMessage))
           }
