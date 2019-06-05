@@ -13,16 +13,16 @@ module.exports = {
     //     const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
     //     types.forEach(type => addStyleResource(config.module.rule('stylus').oneOf(type)))
     // },
-    devServer: {
-      proxy:{
-        '/api': {
-        target: 'http://editme.top:8000',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
-    }
+    // devServer: {
+    //   proxy:{
+    //     '/api': {
+    //     target: 'http://editme.top:8000',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // }
 }
 
 // function addStyleResource (rule) {

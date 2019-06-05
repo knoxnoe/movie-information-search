@@ -14,8 +14,7 @@
           <el-option label="知识图谱" value="1"></el-option>
           <el-option label="知识问答" value="2"></el-option>
         </el-select>
-        <el-button type="primary" slot="append" icon="el-icon-search" class="noe-search">搜索</el-button>
-        <!-- <el-button  icon="el-icon-search" type="primary"></el-button> -->
+        <el-button type="primary" slot="append" icon="el-icon-search" class="noe-search" @click="search">搜索</el-button>
       </el-autocomplete>
     </div>
   </div>
@@ -51,7 +50,22 @@ export default {
         { "value": "南拳妈妈龙虾盖浇饭", "address": "普陀区金沙江路1699号鑫乐惠美食广场A13" }
       ];
     },
-    handleSelect() {
+    handleSelect(item) {
+    },
+    search(){
+      if(this.select == 1){//搜索分类分支1
+        this.$cookie.set('currentSearchText', this.input, 1)
+        this.$router.push({name: 'res', params: {searchText: this.input}})
+      }else if(this.select == 2){//搜索分类分支2
+        console.log(this.select)
+      }else{
+        var h = this.$createElement;
+        this.$notify({
+          title: '警告',
+          type: 'warning',
+          message: h('i', { style: 'color: teal'}, '请选择搜索分类')
+        });
+      }
     }
   },
   mounted() {

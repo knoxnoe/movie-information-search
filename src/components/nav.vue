@@ -202,7 +202,7 @@ export default {
             'PageState',['saveHashUrl']
         ),
         ...mapMutations(
-            'UserState',['judgeLogonStatus','setToken']
+            'UserState',['judgeLogonStatus']
         ),
         signin (formName) {//登陆
             this.loading = true
@@ -217,14 +217,13 @@ export default {
                         if (response.status === 200) {
                             this.$cookie.set('token', response.token, 1)
                             this.judgeLogonStatus()
-                            this.setToken(response.token)
                             setTimeout(() => {
                                 this.loading = false
                                 this.dialogFormVisibleSignin = false
                             },400)
                             //, params: {searchtext: this.state}
                         } else {
-                            alert(JSON.stringify(response.statusMessage))
+                            this.$message.error(JSON.stringify(response.statusMessage));
                         }
                     })     
                 } else {
@@ -247,7 +246,7 @@ export default {
                             this.dialogFormVisibleSignup = false //关闭注册dialog
                             this.dialogFormVisibleSignin = true  //打开登陆dialog
                         } else {
-                            alert(JSON.stringify(response.statusMessage))
+                            this.$message.error(JSON.stringify(response.statusMessage));
                         }
                     })
                 } else {
@@ -282,6 +281,7 @@ body
             height 100%
             width 40px
             display inline-block
+            cursor pointer
     .bdgeitem
         .el-badge__content.is-fixed
             top 10px

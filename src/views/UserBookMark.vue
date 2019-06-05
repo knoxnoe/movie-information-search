@@ -1,84 +1,166 @@
 <template>
-  <div class="user">
+  <div class="bookMark">
     <div style="margin-bottom: 20px;">
-      <el-button
-        size="small"
-        @click="addTab(editableTabsValue)"
-      >
-        add tab
-      </el-button>
+      <el-button type="primary" icon="el-icon-folder-add" @click="createCollection()">创建收藏夹</el-button>
     </div>
-    <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab">
-      <el-tab-pane
-        v-for="(item, index) in editableTabs"
-        :key="item.name"
-        :label="item.title"
-        :name="item.name"
-      >
-        {{item.content}}
-      </el-tab-pane>
-    </el-tabs>
+      <el-tabs v-model="collectionId" type="card" closable @tab-remove="removeCollection" @tab-click="checkCollection">
+        <el-tab-pane
+          v-for="(item, index) in collections"
+          :key="item.id"
+          :label="item.id"
+          :name="item.id">
+          <!-- {{item.content}} -->
+          <div>
+            <List></List>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+      <!-- 创建创建收藏夹dialog -->
+      <el-dialog title="创建收藏夹" :visible.sync="dialogCollectionsVisible" center width="40%">
+        <el-form :model="form">
+          <el-form-item label="收藏夹名">
+            <el-input class="collectionName" v-model="form.name" size="small"></el-input>
+          </el-form-item>
+          <el-form-item label="收藏夹种类">
+            <el-select v-model="form.region" placeholder="请选择是否公开">
+              <el-option label="私有" value="1"></el-option>
+              <el-option label="公开" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogCollectionsVisible = false">取 消</el-button>
+          <el-button type="primary" @click="affirmCollection">确 定</el-button>
+        </div>
+      </el-dialog>
+
   </div>
 </template>
 <script>
+  import List from '@/components/list.vue'
   export default {
     data() {
       return {
-        editableTabsValue: '2',
-        editableTabs: [{
-          title: 'Tab 1',
-          name: '1',
-          content: 'Tab 1 content'
-        }, {
-          title: 'Tab 2',
-          name: '2',
-          content: 'Tab 2 content'
-        }],
-        tabIndex: 2
+        collectionId: '',//当前激活状态
+        collections: [],
+        collectionsNum: 0,
+        dialogCollectionsVisible: false,
+        form:{
+          name: '',
+          region: '',
+        },
+        formLabelwidth: '120px'
       }
     },
+    components:{
+      List
+    },
     mounted(){
-      console.log(this.$store.state.UserState.token)
       this.getListOfBookMark()
     },
     methods: {
-      getListOfBookMark(){
-        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
+      affirmCollection() {//确认创建文件夹信息
+        var numPrivate = new Number(this.form.region)
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'
         this.axios.post(PostUrl,{
-            'token': this.$store.state.UserState.token
+            token: this.$store.state.UserState.token,
+            name: this.form.name,
+            private: numPrivate  
         }).then(response => {
           console.log(response)
-            response = response.data;
+          response = response.data;
+          if(response.status == 200){
+            this.addCollection(response.data.name,response.data.id)
+          }else{
+            this.$message.error(JSON.stringify(response.statusMessage));
+          }
         })
       },
-      addTab(targetName) {
-        let newTabName = ++this.tabIndex + '';
-        this.editableTabs.push({
-          title: 'New Tab',
+      getListOfBookMark(){
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
+        this.axios.get(PostUrl,{
+          params: {
+            token: this.$store.state.UserState.token
+          }
+        }).then(response => {
+          console.log(response)
+          response = response.data;
+          if(response.status == 200 && response.data.length>0){
+            if(response.data.length>0){
+              this.collections = response.data
+              this.collectionsNum = response.data.length
+              this.collectionId = response.data[0].id
+            }else{
+               this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
+            }
+          }else{
+             this.$message.error(JSON.stringify(response.statusMessage));
+          }
+        })
+      },
+      createCollection() { //创建收藏夹
+        this.dialogCollectionsVisible = true
+      },
+      addCollection(targetName,targetId){//将创建好的进行UI添加
+        var newTabName = targetName;
+        //++this.collectionsNum + '';
+        this.collections.push({
+          title: newTabName,
           name: newTabName,
           content: 'New Tab content'
         });
-        this.editableTabsValue = newTabName;
+        this.collectionId = JSON.stringify(targetId)
+        this.dialogCollectionsVisible = false
       },
-      removeTab(targetName) {
-        let tabs = this.editableTabs;
-        let activeName = this.editableTabsValue;
-        if (activeName === targetName) {
+      removeCollection(targetId) {
+        var res = this.affirmRemove(targetId)
+      },
+      checkCollection(item){
+        console.log(item)
+      },
+      affirmRemove(targetId) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.remove(targetId)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+          return 0;      
+        });
+      },
+      remove(targetId){
+        var tabs = this.collections;
+        var activeId = this.collectionId;
+        if (activeId === targetId) {
           tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
+            if (tab.id === targetId) {
               let nextTab = tabs[index + 1] || tabs[index - 1];
               if (nextTab) {
-                activeName = nextTab.name;
+                activeId = nextTab.Id;
               }
             }
           });
         }
-        
-        this.editableTabsValue = activeName;
-        this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+        this.collectionId = activeId;
+        this.collections = tabs.filter(tab => tab.id !== targetId);
       }
     }
   }
 </script>
 <style lang="stylus">
+body
+  margin 0
+.bookMark
+  padding 20px
+.collectionName
+  width auto
 </style>

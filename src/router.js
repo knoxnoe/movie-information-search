@@ -37,6 +37,11 @@ export default new Router({
       path: '/concern',
       name: 'concern',
       component: () => import('./views/UserConcern.vue')
-    }
+    },
+    {
+      path: '/res',
+      name: 'res',
+      component: () => import('./views/SearchRes.vue')
+    },
   ]
 })

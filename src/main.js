@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueCookie from 'vue-cookie'
+import echarts from 'echarts'
 
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
@@ -23,8 +24,8 @@ axios.defaults.transformRequest = [function (data) {
     return ret
 }]
 
-// axios.defaults.headers.post['Content-Type'] = 'form-data'
 Vue.config.productionTip = false
+Vue.prototype.$echarts = echarts
 
 new Vue({
   router,

@@ -41,7 +41,7 @@ export default {
 body
   margin 0
 .list-noe
-  height 70vh
+  height 68vh
   overflow scroll
   &::-webkit-scrollbar
     display: none;

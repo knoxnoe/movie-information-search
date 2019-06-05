@@ -17,21 +17,18 @@ export default {
 
     }
   },
+  mounted(){
+    this.getFindList()
+  },
   methods:{
     getFindList(){
-      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/join/'
-      this.axios.post(PostUrl,{
-          'username': this.formsignup.user,
-          'nickname': 'noe',
-          'password': this.formsignup.pwd,
+      console.log(this.$store.state.UserState.token)
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/feeds/'
+      this.axios.get(PostUrl,{
+          'token': this.$store.state.UserState.token
       }).then(response => {
+          console.log(response)
           response = response.data;
-          if (response.status === 200) {
-              this.dialogFormVisibleSignup = false //关闭注册 dialog
-              this.dialogFormVisibleSignin = true  //打开登陆 dialog
-          } else {
-              alert(JSON.stringify(response.statusMessage))
-          }
       })
     }
   }
