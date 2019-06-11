@@ -5,8 +5,10 @@
                 <span class="text">{{item.name}}</span>
                 <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
             </div>
-            <div v-for="o in 4" :key="o" class="text item">
-                {{'列表内容 ' + o }}
+            <div class="text item">
+                {{'内容 ' + item.content }}
+                {{'作者 ' + item.user }}
+                {{'时间 ' + item.created_date }}
             </div>
         </el-card>
         <div class="loadmore">
@@ -17,23 +19,39 @@
 <script>
 export default {
   name: 'List',
+  props:{
+    dataList: ''
+  },
   data () {
     return {
-      list: [{
-        name: 'hantiaotiao',
-        id: '0'
-      },{
-        name: 'Lucien',
-        id: '1'
-      },{
-        name: 'noe',
-        id: '3'
-      },
-      {
-        name: 'noe',
-        id: '4'
-      }]
+      // list: [{
+      //   name: 'hantiaotiao',
+      //   id: '0'
+      // },{
+      //   name: 'Lucien',
+      //   id: '1'
+      // },{
+      //   name: 'noe',
+      //   id: '3'
+      // },
+      // {
+      //   name: 'noe',
+      //   id: '4'
+      // }]
     }
+  },
+  computed:{
+    list: {
+      get:function(){
+        return this.dataList
+      },
+      set:function(val){
+        console.log(val)
+      }
+    }
+  },
+  mounted(){
+    this.list = this.dataList
   }
 }
 </script>

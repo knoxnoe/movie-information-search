@@ -4,7 +4,7 @@
       	<el-button type="primary" icon="el-icon-edit-outline" @click="EditingArticlesDialogVisible = true">发表文章</el-button>
     	</div>
 			<keep-alive>
-				<List></List>
+				<List :dataList="essaysList"></List>
 			</keep-alive>
 			<el-dialog
 				title="编辑文章"
@@ -47,7 +47,7 @@
 
 				<span slot="footer" class="dialog-footer">
 					<el-button @click="EditingArticlesDialogVisible = false">取 消</el-button>
-					<el-button type="primary" @click="EditingArticlesDialogVisible = false">发表</el-button>
+					<el-button type="primary" @click="publishArticle">发表</el-button>
 				</span>
 			</el-dialog>
 			<!-- 查看图片详情 -->
@@ -57,7 +57,8 @@
     </div>
 </template>
 <script>
-import List from '@/components/list.vue'
+// import List from '@/components/list.vue'
+const List = () => import('@/components/list.vue')
 export default {
   components:{
     List
@@ -68,8 +69,13 @@ export default {
 			dialogImageUrl: '',
 			dialogVisible: false,
 			textarea: '',
-			fileList: []
+			fileList: [],
+			essaysList:[]
     }
+	},
+	created(){
+		this.getArticles()
+		console.log('fasdfafsdfasdfasdf')
 	},
 	methods: {
 		submitUpload() {//提交上传文章
@@ -85,7 +91,45 @@ export default {
       this.dialogImageUrl = file.url;
 			this.dialogVisible = true;
 			console.log(fileList)
-    }
+		},
+		publishArticle(){//发表文章
+			if(this.textarea.length > 0){
+				this.EditingArticlesDialogVisible = false
+				var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/article/'
+        this.axios.post(PostUrl, {
+            content: this.textarea,
+            token: this.$store.state.UserState.token
+        }).then(response => {
+            console.log(response)
+            response = response.data
+            if (response.status === 200) {
+            } else {
+              this.$message.error(JSON.stringify(response.statusMessage));
+            }
+        }) 
+			}else{
+				this.$message.error('文章内容不能为空');
+			}
+		},
+		getArticles(){
+			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/'+ this.$store.state.UserState.username + '/articles/'
+      this.axios.get(PostUrl, {
+        params: {
+          username: this.$store.state.UserState.username,
+          start: 0,
+          end: 20
+        }
+      }).then(response => {
+          console.log(response)
+          response = response.data
+          if (response.status === 200) {
+						this.essaysList = response.data
+						console.log(this.essaysList)
+          } else {
+            this.$message.error(JSON.stringify(response.statusMessage));
+          }
+      }) 
+		}
   }
 }
 </script>
