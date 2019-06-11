@@ -23,6 +23,7 @@
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="/bookMark" divided>收藏夹</el-dropdown-item>
                             <el-dropdown-item command="/concern" divided>我的关注</el-dropdown-item>
+                            <el-dropdown-item command="/myEssay" divided>我的文章</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -216,6 +217,7 @@ export default {
                         response = response.data
                         if (response.status === 200) {
                             this.$cookie.set('token', response.token, 1)
+                            this.$cookie.set('username', this.formsignin.user, 1)
                             this.judgeLogonStatus()
                             setTimeout(() => {
                                 this.loading = false

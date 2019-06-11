@@ -43,5 +43,10 @@ export default new Router({
       name: 'res',
       component: () => import('./views/SearchRes.vue')
     },
+    {
+      path: '/myEssay',
+      name: 'myEssay',
+      component: () => import('./views/myEssay.vue')
+    },
   ]
 })

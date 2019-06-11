@@ -3,37 +3,36 @@
     <div style="margin-bottom: 20px;">
       <el-button type="primary" icon="el-icon-folder-add" @click="createCollection()">创建收藏夹</el-button>
     </div>
-      <el-tabs v-model="collectionId" type="card" closable @tab-remove="removeCollection" @tab-click="checkCollection">
-        <el-tab-pane
-          v-for="(item, index) in collections"
-          :key="item.id"
-          :label="item.id"
-          :name="item.id">
-          <!-- {{item.content}} -->
-          <div>
-            <List></List>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-      <!-- 创建创建收藏夹dialog -->
-      <el-dialog title="创建收藏夹" :visible.sync="dialogCollectionsVisible" center width="40%">
-        <el-form :model="form">
-          <el-form-item label="收藏夹名">
-            <el-input class="collectionName" v-model="form.name" size="small"></el-input>
-          </el-form-item>
-          <el-form-item label="收藏夹种类">
-            <el-select v-model="form.region" placeholder="请选择是否公开">
-              <el-option label="私有" value="1"></el-option>
-              <el-option label="公开" value="0"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogCollectionsVisible = false">取 消</el-button>
-          <el-button type="primary" @click="affirmCollection">确 定</el-button>
+    <el-tabs v-model="collectionId" type="card" closable @tab-remove="removeCollection" @tab-click="checkCollection">
+      <el-tab-pane
+        v-for="(item, index) in collections"
+        :key="item.id"
+        :label="item.name"
+        :name="item.id">
+        <!-- {{item.content}} -->
+        <div>
+          <List></List>
         </div>
-      </el-dialog>
-
+      </el-tab-pane>
+    </el-tabs>
+    <!-- 创建创建收藏夹dialog -->
+    <el-dialog title="创建收藏夹" :visible.sync="dialogCollectionsVisible" center width="40%">
+      <el-form :model="form">
+        <el-form-item label="收藏夹名">
+          <el-input class="collectionName" v-model="form.name" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="收藏夹种类">
+          <el-select v-model="form.region" placeholder="请选择是否公开">
+            <el-option label="私有" value="1"></el-option>
+            <el-option label="公开" value="0"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogCollectionsVisible = false">取 消</el-button>
+        <el-button type="primary" @click="affirmCollection">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -59,24 +58,7 @@
       this.getListOfBookMark()
     },
     methods: {
-      affirmCollection() {//确认创建文件夹信息
-        var numPrivate = new Number(this.form.region)
-        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'
-        this.axios.post(PostUrl,{
-            token: this.$store.state.UserState.token,
-            name: this.form.name,
-            private: numPrivate  
-        }).then(response => {
-          console.log(response)
-          response = response.data;
-          if(response.status == 200){
-            this.addCollection(response.data.name,response.data.id)
-          }else{
-            this.$message.error(JSON.stringify(response.statusMessage));
-          }
-        })
-      },
-      getListOfBookMark(){
+      getListOfBookMark(){//挂在组件将请求的数据初始化
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
         this.axios.get(PostUrl,{
           params: {
@@ -98,6 +80,24 @@
           }
         })
       },
+
+      affirmCollection() {//确认创建文件夹信息
+        var numPrivate = new Number(this.form.region)
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'
+        this.axios.post(PostUrl,{
+            token: this.$store.state.UserState.token,
+            name: this.form.name,
+            private: numPrivate  
+        }).then(response => {
+          console.log(response)
+          response = response.data;
+          if(response.status == 200){
+            this.addCollection(response.data.name,response.data.id)
+          }else{
+            this.$message.error(JSON.stringify(response.statusMessage));
+          }
+        })
+      },
       createCollection() { //创建收藏夹
         this.dialogCollectionsVisible = true
       },
@@ -112,11 +112,9 @@
         this.collectionId = JSON.stringify(targetId)
         this.dialogCollectionsVisible = false
       },
+
       removeCollection(targetId) {
         var res = this.affirmRemove(targetId)
-      },
-      checkCollection(item){
-        console.log(item)
       },
       affirmRemove(targetId) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -152,6 +150,21 @@
         }
         this.collectionId = activeId;
         this.collections = tabs.filter(tab => tab.id !== targetId);
+      },
+
+      checkCollection(item){
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'+item.$options.propsData.name+'/'
+        this.axios.get(PostUrl,{
+          params: {
+            token: this.$store.state.UserState.token,
+            collection_id: item.$options.propsData.name,
+            start: 0,
+            end: 20
+          }
+        }).then(response => {
+          console.log(response)
+          response = response.data
+        })
       }
     }
   }
