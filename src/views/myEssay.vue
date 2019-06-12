@@ -60,22 +60,21 @@
 // import List from '@/components/list.vue'
 const List = () => import('@/components/list.vue')
 export default {
-  components:{
-    List
+ 	components:{
+    	List
 	},
 	data () {
-    return {
+    	return {
 			EditingArticlesDialogVisible: false,
 			dialogImageUrl: '',
 			dialogVisible: false,
 			textarea: '',
 			fileList: [],
 			essaysList:[]
-    }
+   		 }
 	},
 	created(){
 		this.getArticles()
-		console.log('fasdfafsdfasdfasdf')
 	},
 	methods: {
 		submitUpload() {//提交上传文章
@@ -84,51 +83,51 @@ export default {
 		submit(response, file, fileList){
 			console.log(response)
 		},
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-			this.dialogVisible = true;
-			console.log(fileList)
+		handleRemove(file, fileList) {
+		console.log(file, fileList);
 		},
-		publishArticle(){//发表文章
-			if(this.textarea.length > 0){
-				this.EditingArticlesDialogVisible = false
-				var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/article/'
-        this.axios.post(PostUrl, {
-            content: this.textarea,
-            token: this.$store.state.UserState.token
-        }).then(response => {
-            console.log(response)
-            response = response.data
-            if (response.status === 200) {
-            } else {
-              this.$message.error(JSON.stringify(response.statusMessage));
-            }
-        }) 
-			}else{
-				this.$message.error('文章内容不能为空');
-			}
-		},
+		handlePictureCardPreview(file) {
+		this.dialogImageUrl = file.url;
+				this.dialogVisible = true;
+				console.log(fileList)
+			},
+			publishArticle(){//发表文章
+				if(this.textarea.length > 0){
+					this.EditingArticlesDialogVisible = false
+					var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/article/'
+			this.axios.post(PostUrl, {
+				content: this.textarea,
+				token: this.$store.state.UserState.token
+			}).then(response => {
+				console.log(response)
+				response = response.data
+				if (response.status === 200) {
+				} else {
+				this.$message.error(JSON.stringify(response.statusMessage));
+				}
+			}) 
+				}else{
+					this.$message.error('文章内容不能为空');
+				}
+			},
 		getArticles(){
 			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/'+ this.$store.state.UserState.username + '/articles/'
-      this.axios.get(PostUrl, {
-        params: {
-          username: this.$store.state.UserState.username,
-          start: 0,
-          end: 20
-        }
-      }).then(response => {
-          console.log(response)
-          response = response.data
-          if (response.status === 200) {
-						this.essaysList = response.data
-						console.log(this.essaysList)
-          } else {
-            this.$message.error(JSON.stringify(response.statusMessage));
-          }
-      }) 
+			this.axios.get(PostUrl, {
+				params: {
+				username: this.$store.state.UserState.username,
+				start: 0,
+				end: 20
+				}
+			}).then(response => {
+				console.log(response)
+				response = response.data
+				if (response.status === 200) {
+					this.essaysList = response.data
+					console.log(this.essaysList)
+				} else {
+					this.$message.error(JSON.stringify(response.statusMessage));
+				}
+			}) 
 		}
   }
 }

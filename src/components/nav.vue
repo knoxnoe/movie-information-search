@@ -24,6 +24,7 @@
                             <el-dropdown-item command="/bookMark" divided>收藏夹</el-dropdown-item>
                             <el-dropdown-item command="/concern" divided>我的关注</el-dropdown-item>
                             <el-dropdown-item command="/myEssay" divided>我的文章</el-dropdown-item>
+                            <el-dropdown-item command="/" divided>退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -186,7 +187,6 @@ export default {
         },
         handleSelect(item){
             if(item =='/about'){
-                console.log(this.$store.state.UserState.logonStatus)
                 if(this.$store.state.UserState.logonStatus){
                     this.$router.push({ path: item })
                     this.saveHashUrl(item)
@@ -203,7 +203,7 @@ export default {
             'PageState',['saveHashUrl']
         ),
         ...mapMutations(
-            'UserState',['judgeLogonStatus']
+            'UserState',['judgeLogonStatus','removeLogonStatus']
         ),
         signin (formName) {//登陆
             this.loading = true
@@ -225,7 +225,11 @@ export default {
                             },400)
                             //, params: {searchtext: this.state}
                         } else {
-                            this.$message.error(JSON.stringify(response.statusMessage));
+                            this.$message.error(JSON.stringify(response.statusMessage))
+                            setTimeout(() => {
+                                this.loading = false
+                                this.dialogFormVisibleSignin = false
+                            },400)
                         }
                     })     
                 } else {
@@ -261,6 +265,11 @@ export default {
             this.dialogFormVisibleforgetPwd = true
         },
         handleCommand(command) {
+            if(command == '/'){
+                this.$cookie.set('token', 'false', 1)
+                this.$cookie.set('username', 'false', 1)
+                this.removeLogonStatus()
+            }
             this.$router.push({ path: command })
         }
     }

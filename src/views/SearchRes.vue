@@ -21,12 +21,9 @@ import { mapMutations } from 'vuex'
 import chart from '@/components/chart.vue'
 export default {
   data: () => ({
-      text: ' ',
-      xx: 'init',
       rdfdata: [],
       flag: false,
       search: '',
-      summary1: []
   }),
   components: {
     chart
@@ -67,18 +64,18 @@ export default {
     // }
   },
   mounted () {//根据home页面传来的值进行搜索
-    this.search = this.$route.params.searchtext || '周星驰';
-    var params_searchtext = this.$route.params.searchText;//'周星驰'
+    this.search = this.$route.params.searchText || this.$store.state.UserState.currentSearchText
     var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/search/'
+    console.log(this.$route.params.searchText || this.$store.state.UserState.currentSearchText)
     this.axios.get(PostUrl,{
        params: {
-        name: this.$store.state.UserState.currentSearchText
+        name: this.$route.params.searchText || this.$store.state.UserState.currentSearchText
       }
     }).then(response => {
         console.log(response)
-        response = response.data;
+        response = response.data
         if (response.status === 200) {
-          this.rdfdata.push(response.data);
+          this.rdfdata.push(response.data[0]);
           this.flag = true
         } else {
           this.$message.error(JSON.stringify(response.statusMessage));
@@ -95,11 +92,6 @@ export default {
   display flex
   flex-direction row
   .reschart
-    width 70%
-.reslist
-  width 30%
-  height 99vh
-  overflow-y scroll
-  border:1px solid #ddd
+    width 100%
 
 </style>

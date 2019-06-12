@@ -42,8 +42,8 @@ export default {
     },
     loadAll() {
       return [
-        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
+        { "value": "周星驰", "address": "长宁区新渔路144号" },
+        { "value": "周润发", "address": "上海市长宁区淞虹路661号" },
         { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
         { "value": "泷千家(天山西路店)", "address": "天山西路438号" },
         { "value": "胖仙女纸杯蛋糕（上海凌空店）", "address": "上海市长宁区金钟路968号1幢18号楼一层商铺18-101" },
@@ -51,13 +51,14 @@ export default {
       ];
     },
     handleSelect(item) {
+      console.log(item)
     },
     search(){
       if(this.select == 1){//搜索分类分支1
         this.$cookie.set('currentSearchText', this.input, 1)
         this.$router.push({name: 'res', params: {searchText: this.input}})
       }else if(this.select == 2){//搜索分类分支2
-        console.log(this.select)
+        console.log('选择搜索分类是：'+this.select)
       }else{
         var h = this.$createElement;
         this.$notify({

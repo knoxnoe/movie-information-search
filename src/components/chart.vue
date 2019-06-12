@@ -17,7 +17,6 @@
 <script>
 import vue from 'vue'
 import echarts from 'echarts'
-
 export default {
   props: {
     rdf: Array,
@@ -31,7 +30,6 @@ export default {
         proxyedgescopy: [],
         shouldRefresh: true,
         chart_rdf: [],
-        temprelation: '', //临时关系
         option: {
           series: [{
             type: 'graph',
@@ -76,8 +74,6 @@ export default {
         }
     }
   },
-  computed:{
-  },
   mounted () {
     // 绘制图表，this.echarts1_option是数据
     this.chart_rdf = this.rdf
@@ -85,67 +81,83 @@ export default {
   },
   methods: {
       init: function(){
-        var that = this;
+        //绑定点击事件
+        var that = this
         var myChart = echarts.init(document.getElementById('echartss'));
         myChart.on('click',function (param) {
           if(param.dataType == 'node'){
-            if(param.data.click == true){
-              that.onChartClickmovie(param.data);
+            if(param.data.click == false){
+              that.onChartClickmovie(param.data)
             }else{
-              that.onChartClickperson(param.data);
+              that.onChartClickperson(param.data)
             }
           }
         });
-        this.temprelation = '演员'
-        this.proxydata.push({
-          id : this.chart_rdf[0].id,
-          category : 0,
-          name : this.chart_rdf[0].name,
-          symbol : 'circle',
-          value : this.temprelation,
-          symbolSize : 40,
-          fixd: true,
-          click: false
-        })
-        for(var i=0;i<this.chart_rdf[0].works.length;i++){
-          vue.axios.get('http://editme.top:8001/api/v3/movie/', {
-            params: {
-              id: this.chart_rdf[0].works[i].id
-            }
-          }).then(response => {
-            var temp = response.data
-            that.addNode({
-              id : temp._id,
+        //length不一定存在，后面再说
+        if(this.chart_rdf[0].movies){
+          this.proxydata.push({
+            id : this.chart_rdf[0].id,
+            category : 0,
+            name : this.chart_rdf[0].name,
+            symbol : 'circle',
+            value : this.temprelation,
+            symbolSize : 40,
+            fixd: true,
+            click: false,
+            url: this.chart_rdf[0].url
+          })
+          for(var i=0;i<this.chart_rdf[0].movies.length;i++){
+            this.addNode({
+              id : this.chart_rdf[0].movies[i].movie.id,
               category : 1,
-              name : temp.title +'上映年份:'+temp.year,
+              name : this.chart_rdf[0].movies[i].movie.title,
               symbol : 'circle',
-              value : this.temprelation,
+              value : this.chart_rdf[0].movies[i].role,
               symbolSize : 40,
               fixd: true,
-              click: true
+              click: true,
+              url: this.chart_rdf[0].movies[i].movie.url
             })
-
-            that.addEdge({source: this.chart_rdf[0]._id,target: temp._id})
-            that.drawchart()
-          }).catch(error => {
-            console.log(error)
+            this.addEdge({source: JSON.stringify(this.chart_rdf[0].id),target: JSON.stringify(this.chart_rdf[0].movies[i].movie.id)})
+            this.drawchart()
+          }
+        }else if(this.chart_rdf[0].persons){
+          this.proxydata.push({
+            id : this.chart_rdf[0].id,
+            category : 0,
+            name : this.chart_rdf[0].title,
+            symbol : 'circle',
+            value : this.temprelation,
+            symbolSize : 40,
+            fixd: true,
+            click: false,
+            url: this.chart_rdf[0].url
           })
+          for(var i=0;i<this.chart_rdf[0].persons.length;i++){
+            this.addNode({
+              id : this.chart_rdf[0].persons[i].person.id,
+              category : 1,
+              name : this.chart_rdf[0].persons[i].person.name,
+              symbol : 'circle',
+              value : this.chart_rdf[0].persons[i].role,
+              symbolSize : 40,
+              fixd: true,
+              click: true,
+              url: this.chart_rdf[0].persons[i].person.url
+            })
+            this.addEdge({source: JSON.stringify(this.chart_rdf[0].id),target: JSON.stringify(this.chart_rdf[0].persons[i].person.id)})
+            this.drawchart()
+          }
         }
+        
       },
       //画
       drawchart() {
         var myChart = echarts.init(document.getElementById('echartss'));
-        console.log(this.option.series[0].data)
-        myChart.setOption(this.option);
-
+        myChart.setOption(this.option); 
       },
       //加点
       addNode(node) {
-        // if (!this.proxydata.has(node))
-        // if(this.proxydatacopy.indexOf(node.id) < 0){
-        //   this.proxydatacopy.push(node.id)
-        //   this.proxydata.push(node)
-        // }
         var index = 0;
         for(var i=0;i<this.proxydata.length;i++){
           if(node.id == this.proxydata[i].id){
@@ -157,111 +169,83 @@ export default {
         if(index == this.proxydata.length){
           this.proxydata.push(node)
         }
-        //var set = new Set(this.proxydata);Array.from(set)
         this.option.series[0].data = this.proxydata
       },
       //加边
       addEdge(edge) {
-          //if (!this.proxyedges.has(edge))
-          // this.proxyedgescopy.push(node.id)
           this.proxyedges.push(edge)
           this.option.series[0].edges = this.proxyedges
-          // var set = new Set(this.proxyedges);
-          // this.option.series[0].edges = Array.from(set)
       },
       //请求数据
-      httpMovie(id) {
+      httpMovie(url) {
         var that = this;
-        vue.axios.get('http://editme.top:8001/api/v3/person/', {
-            params: {
-              id: id
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1' + url
+        vue.axios.get(PostUrl).then(response => {
+          console.log(response)
+          response = response.data
+          if(response.status === 200){
+            var temp = response.data;
+            if (temp.movies.length <= 0) return 0;
+            for(var i=0;i<temp.movies.length;i++){
+              that.addNode({
+                id : temp.movies[i].movie.id,
+                category : 3,
+                name : temp.movies[i].movie.title,
+                symbol : 'circle',
+                value : temp.movies[i].role,
+                symbolSize : 40,
+                fixd: true,
+                click: false,
+                url: temp.movies[i].movie.url
+              })
+              that.addEdge({source: JSON.stringify(temp.id),target: JSON.stringify(temp.movies[i].movie.id)})
+              that.drawchart()
             }
-          }).then(response => {
-            var temp1 = response.data;
-            // that.$emit('childmessage',temp1.summary)
-            if (temp1.works.length <= 0) return 0;
-            for(var i=0;i<temp1.works.length;i++){
-              if(temp1.works[i] != null){
-                vue.axios.get('http://editme.top:8001/api/v3/movie/', {
-                  params: {
-                    id: temp1.works[i].id
-                  }
-                }).then(response => {
-                  var temp2 = response.data
-                  if (temp2._id != undefined) {
-                    that.addNode({
-                      id : temp2._id,
-                      category : 3,
-                      name : temp2.title,
-                      symbol : 'circle',
-                      value : '演员',
-                      symbolSize : 40,
-                      fixd: true,
-                      click: false
-                    })
-                    that.addEdge({source: temp1._id,target: temp2._id})
-                    that.drawchart()
-                  }
-                }).catch(error => {
-                  console.log(error)
-                })
-              }
-            }
-          }).catch(error => {
-            console.log(error)
-          })
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
-      httpPerson(id) {
+      httpPerson(url) {
         var that = this;
-        vue.axios.get('http://editme.top:8001/api/v3/movie/', {
-            params: {
-              id: id
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1' + url
+        vue.axios.get(PostUrl).then(response => {
+          console.log(response)
+          response = response.data
+          if(response.status === 200){
+            var temp = response.data;
+            if (temp.persons.length <= 0) return 0;
+            for(var i=0;i<temp.persons.length;i++){
+              that.addNode({
+                id : temp.persons[i].person.id,
+                category : 3,
+                name : temp.persons[i].person.name,
+                symbol : 'circle',
+                value : temp.persons[i].role,
+                symbolSize : 40,
+                fixd: true,
+                click: false,
+                url: temp.persons[i].person.url
+              })
+              that.addEdge({source: JSON.stringify(temp.id),target: JSON.stringify(temp.persons[i].person.id)})
+              that.drawchart()
             }
-          }).then(response => {
-            var temp1 = response.data;
-            if (temp1.writers.length <= 0) return 0;
-            for(var i=0;i<temp1.writers.length;i++){
-              if(temp1.writers[i] != null){
-                vue.axios.get('http://editme.top:8001/api/v3/person/', {
-                  params: {
-                    id: temp1.writers[i]
-                  }
-                }).then(response => {
-                  var temp2 = response.data;
-                  if (temp2._id != undefined) {
-                    that.addNode({
-                      id : temp2._id,
-                      category : 2,
-                      name : temp2.name,
-                      symbol : 'circle',
-                      value : temp2.professions[0],
-                      symbolSize : 40,
-                      fixd: true,
-                      click: false
-                    })
-                    that.addEdge({source: temp1._id,target: temp2._id})
-                    that.drawchart()
-                  }
-                }).catch(error => {
-                  console.log(error)
-                })
-              }
-            }
-          }).catch(error => {
-            console.log(error)
-          })
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
-      //点击电影节点事件
+      //点击电影节点请求人
       onChartClickmovie: function(param){
-        console.log('child')
-        this.$emit('childmessage',param)
-        this.httpPerson(param.id)
+        // this.$emit('childmessage',param)
+        console.log(param)
+        this.httpPerson(param.url)
       },
-
+      //点击人节点请求电影
       onChartClickperson: function(param){
-        console.log('child')
-        this.$emit('childmessage',param)
-        this.httpMovie(param.id)
+        // this.$emit('childmessage',param)
+        console.log(param)
+        this.httpMovie(param.url)
       }
   }
 }

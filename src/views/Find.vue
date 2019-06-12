@@ -24,8 +24,13 @@ export default {
     getFindList(){
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/feeds/'
       this.axios.get(PostUrl,{
-        'token': this.$store.state.UserState.token
+        params: {
+          'token': this.$store.state.UserState.token,
+          start: 0,
+          end: 20
+        }
       }).then(response => {
+          console.log(response)
           response = response.data;
       })
     }
