@@ -30,6 +30,7 @@ export default {
         proxyedgescopy: [],
         shouldRefresh: true,
         chart_rdf: [],
+        categorie: 0,
         option: {
           series: [{
             type: 'graph',
@@ -38,7 +39,7 @@ export default {
             roam: true,
             data: [],
             draggable: true,
-            categories: [{},{},{}],
+            categories: [{},{},{},{},{},{},{},{},{},{},{},{}],
             label: {
               normal: {
                 show: true,
@@ -97,34 +98,36 @@ export default {
         if(this.chart_rdf[0].movies){
           this.proxydata.push({
             id : this.chart_rdf[0].id,
-            category : 0,
+            category : that.categorie,
             name : this.chart_rdf[0].name,
             symbol : 'circle',
             value : this.temprelation,
             symbolSize : 40,
             fixd: true,
-            click: false,
+            click: true,
             url: this.chart_rdf[0].url
           })
+          that.categorie++
           for(var i=0;i<this.chart_rdf[0].movies.length;i++){
             this.addNode({
               id : this.chart_rdf[0].movies[i].movie.id,
-              category : 1,
+              category : that.categorie,
               name : this.chart_rdf[0].movies[i].movie.title,
               symbol : 'circle',
               value : this.chart_rdf[0].movies[i].role,
               symbolSize : 40,
               fixd: true,
-              click: true,
+              click: false,
               url: this.chart_rdf[0].movies[i].movie.url
             })
             this.addEdge({source: JSON.stringify(this.chart_rdf[0].id),target: JSON.stringify(this.chart_rdf[0].movies[i].movie.id)})
             this.drawchart()
           }
+          that.categorie++
         }else if(this.chart_rdf[0].persons){
           this.proxydata.push({
             id : this.chart_rdf[0].id,
-            category : 0,
+            category : that.categorie,
             name : this.chart_rdf[0].title,
             symbol : 'circle',
             value : this.temprelation,
@@ -133,10 +136,11 @@ export default {
             click: false,
             url: this.chart_rdf[0].url
           })
+         that.categorie++
           for(var i=0;i<this.chart_rdf[0].persons.length;i++){
             this.addNode({
               id : this.chart_rdf[0].persons[i].person.id,
-              category : 1,
+              category : that.categorie,
               name : this.chart_rdf[0].persons[i].person.name,
               symbol : 'circle',
               value : this.chart_rdf[0].persons[i].role,
@@ -148,6 +152,7 @@ export default {
             this.addEdge({source: JSON.stringify(this.chart_rdf[0].id),target: JSON.stringify(this.chart_rdf[0].persons[i].person.id)})
             this.drawchart()
           }
+          that.categorie++
         }
         
       },
@@ -181,15 +186,13 @@ export default {
         var that = this;
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1' + url
         vue.axios.get(PostUrl).then(response => {
-          console.log(response)
           response = response.data
           if(response.status === 200){
             var temp = response.data;
-            if (temp.movies.length <= 0) return 0;
             for(var i=0;i<temp.movies.length;i++){
               that.addNode({
                 id : temp.movies[i].movie.id,
-                category : 3,
+                category : that.categorie,
                 name : temp.movies[i].movie.title,
                 symbol : 'circle',
                 value : temp.movies[i].role,
@@ -201,6 +204,7 @@ export default {
               that.addEdge({source: JSON.stringify(temp.id),target: JSON.stringify(temp.movies[i].movie.id)})
               that.drawchart()
             }
+            that.categorie++
           }
         }).catch(error => {
           console.log(error)
@@ -210,26 +214,25 @@ export default {
         var that = this;
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1' + url
         vue.axios.get(PostUrl).then(response => {
-          console.log(response)
           response = response.data
           if(response.status === 200){
             var temp = response.data;
-            if (temp.persons.length <= 0) return 0;
             for(var i=0;i<temp.persons.length;i++){
               that.addNode({
                 id : temp.persons[i].person.id,
-                category : 3,
+                category : that.categorie,
                 name : temp.persons[i].person.name,
                 symbol : 'circle',
                 value : temp.persons[i].role,
                 symbolSize : 40,
                 fixd: true,
-                click: false,
+                click: true,
                 url: temp.persons[i].person.url
               })
               that.addEdge({source: JSON.stringify(temp.id),target: JSON.stringify(temp.persons[i].person.id)})
               that.drawchart()
             }
+            that.categorie++
           }
         }).catch(error => {
           console.log(error)
