@@ -2,7 +2,7 @@
   <div class="find">
     <h1>发现别人家的事</h1>
     <keep-alive>
-      <List :dataList="findLists"></List>
+      <List :dataList="findLists" :styles="listFind"></List>
     </keep-alive>
   </div>
 </template>
@@ -14,7 +14,8 @@ export default {
   },
   data () {
     return {
-      findLists: []
+      findLists: [],
+      listFind: false
     }
   },
   mounted(){
@@ -22,7 +23,7 @@ export default {
   },
   methods:{
     getFindList(){
-      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/feeds/'
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/movie/'
       this.axios.get(PostUrl,{
         params: {
           'token': this.$store.state.UserState.token,

@@ -77,7 +77,7 @@ export default {
       })
     },
     getRecommends(){
-      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user_recommend/'
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/user/'
       this.axios.get(PostUrl, {
         params: {
           token: this.$store.state.UserState.token

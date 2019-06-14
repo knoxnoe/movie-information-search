@@ -4,7 +4,7 @@
       	<el-button type="primary" icon="el-icon-edit-outline" @click="EditingArticlesDialogVisible = true">发表文章</el-button>
     	</div>
 			<keep-alive>
-				<List :dataList="essaysList"></List>
+				<List :dataList="essaysList" :style="listEssay"></List>
 			</keep-alive>
 			<el-dialog
 				title="编辑文章"
@@ -19,7 +19,15 @@
 					placeholder="saying something..."
 					v-model="textarea">
 				</el-input>
-
+				
+				<el-autocomplete
+					class="inline-input"
+					v-model="movie"
+					:fetch-suggestions="querySearch"
+					placeholder="请输入想要描述的电影"
+					:trigger-on-focus="false"
+					@select="handleSelect">
+				</el-autocomplete>
 				<el-upload
 					action="https://jsonplaceholder.typicode.com/posts/"
 					list-type="picture-card"
@@ -70,13 +78,62 @@ export default {
 			dialogVisible: false,
 			textarea: '',
 			fileList: [],
-			essaysList:[]
+			essaysList:[],
+			movie: '',
+			restaurants: [],
+			listEssay: true
    		 }
 	},
-	created(){
+	mounted(){
 		this.getArticles()
+		this.restaurants = this.loadAll()	
+	},
+	computed:{
+		
 	},
 	methods: {
+		querySearch(queryString, cb) {
+			var results
+			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/movie/search/'
+			this.axios.get(PostUrl, {
+				params: {
+					title: queryString
+				}
+			}).then(response => {
+				console.log(response)
+				response = response.data
+				if (response.status === 200) {
+					this.restaurants = response.data
+					console.log(this.restaurants)
+					var restaurants = this.restaurants;
+					results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+					console.log(results)
+					// 调用 callback 返回建议列表的数据
+					cb(results);
+				} else {
+					this.$message.error(JSON.stringify(response.statusMessage));
+				}
+			})
+			// var restaurants = this.restaurants;
+			// results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+			// console.log(results)
+			// cb(results);
+			
+		},
+		createFilter(queryString) {
+			return (restaurant) => {
+				return (restaurant.title.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+			};
+		},
+		loadAll() {
+			return [
+				{ "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
+				{ "value": "南拳妈妈龙虾盖浇饭", "address": "普陀区金沙江路1699号鑫乐惠美食广场A13" }
+			];
+		},
+		handleSelect(item) {
+			console.log(item);
+		},
 		submitUpload() {//提交上传文章
 			this.$refs.upload.submit();
 		},
@@ -84,10 +141,10 @@ export default {
 			console.log(response)
 		},
 		handleRemove(file, fileList) {
-		console.log(file, fileList);
+			console.log(file, fileList);
 		},
 		handlePictureCardPreview(file) {
-		this.dialogImageUrl = file.url;
+			this.dialogImageUrl = file.url;
 				this.dialogVisible = true;
 				console.log(fileList)
 			},
@@ -119,11 +176,9 @@ export default {
 				end: 20
 				}
 			}).then(response => {
-				console.log(response)
 				response = response.data
 				if (response.status === 200) {
 					this.essaysList = response.data
-					console.log(this.essaysList)
 				} else {
 					this.$message.error(JSON.stringify(response.statusMessage));
 				}
