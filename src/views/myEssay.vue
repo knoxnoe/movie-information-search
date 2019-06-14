@@ -176,6 +176,7 @@ export default {
 				end: 20
 				}
 			}).then(response => {
+				console.log(response)
 				response = response.data
 				if (response.status === 200) {
 					this.essaysList = response.data

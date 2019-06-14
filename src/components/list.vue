@@ -10,8 +10,6 @@
                 <p>{{'内容 ' + item.content }}</p>
                 <p>{{'作者 ' + item.user }}</p>
                 <p>{{'时间 ' + item.created_date }}</p>
-                <p>{{'影名 ' + item.movie.title }}</p>
-                <p>{{'评分 ' + item.movie.rating }}</p>
             </div>
         </el-card>
       </div>
