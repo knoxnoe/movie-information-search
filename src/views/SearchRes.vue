@@ -65,14 +65,13 @@ export default {
   },
   mounted () {//根据home页面传来的值进行搜索
     this.search = this.$route.params.searchText || this.$store.state.UserState.currentSearchText
-    var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/search/'
-    console.log(this.$route.params.searchText || this.$store.state.UserState.currentSearchText)
-    this.axios.get(PostUrl,{
-       params: {
-        name: this.$route.params.searchText || this.$store.state.UserState.currentSearchText
-      }
-    }).then(response => {
-        console.log(response)
+    if(this.search.length > 3){//智能搜索
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/smart_search/'
+      this.axios.get(PostUrl, {
+        params: {
+          query: this.search
+        }
+      }).then(response => {
         response = response.data
         if (response.status === 200) {
           this.rdfdata.push(response.data[0]);
@@ -80,8 +79,23 @@ export default {
         } else {
           this.$message.error(JSON.stringify(response.statusMessage));
         }
-    })
-      
+      })
+    }else{//知识图谱
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/search/'
+      this.axios.get(PostUrl,{
+        params: {
+          name: this.search
+        }
+      }).then(response => {
+          response = response.data
+          if (response.status === 200) {
+            this.rdfdata.push(response.data[0]);
+            this.flag = true
+          } else {
+            this.$message.error(JSON.stringify(response.statusMessage));
+          }
+      })
+    } 
   }
 }
 

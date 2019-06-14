@@ -11,8 +11,8 @@
             <el-menu-item index="#" disabled>电影采撷狮</el-menu-item>
             <el-menu-item index="/">知识图谱</el-menu-item>
             <el-menu-item index="/about">圈子</el-menu-item>
-            <el-menu-item index="/find">
-                <el-badge :value="3" class="bdgeitem"> 发现 </el-badge>
+            <el-menu-item index="/find">发现
+                <!-- <el-badge :value="3" class="bdgeitem">  </el-badge> -->
             </el-menu-item>
             <el-menu-item class="login" disabled>
                 <div v-if="logonStatus" class="user">

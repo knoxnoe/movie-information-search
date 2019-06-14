@@ -16,6 +16,9 @@
         </el-select>
         <el-button type="primary" slot="append" icon="el-icon-search" class="noe-search" @click="search">搜索</el-button>
       </el-autocomplete>
+      <div class="smart_res" v-if="smartRes">
+        <p>{{'fsdfasfasdfasdfsadf'}}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -26,6 +29,7 @@ export default {
       input: '',
       select: '',
       restaurants: [],
+      smartRes: false
     }
   },
   methods: {
@@ -54,19 +58,35 @@ export default {
       console.log(item)
     },
     search(){
-      if(this.select == 1){//搜索分类分支1
+      if(this.select == 1 && this.input.length>0){//搜索分类分支1
         this.$cookie.set('currentSearchText', this.input, 1)
         this.$router.push({name: 'res', params: {searchText: this.input}})
-      }else if(this.select == 2){//搜索分类分支2
-        console.log('选择搜索分类是：'+this.select)
+      }else if(this.select == 2 && this.input.length>0){//搜索分类分支2
+        this.$cookie.set('currentSearchText', this.input, 1)
+        this.$router.push({name: 'res', params: {searchText: this.input}})
       }else{
         var h = this.$createElement;
         this.$notify({
           title: '警告',
           type: 'warning',
-          message: h('i', { style: 'color: teal'}, '请选择搜索分类')
+          message: h('i', { style: 'color: teal'}, '没有选择搜索分类或搜索内容为空')
         });
       }
+    },
+    smartSearch(){
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/smart_search/'
+      this.axios.get(PostUrl, {
+        params: {
+          query: this.input
+        }
+      }).then(response => {
+        console.log(response)
+        response = response.data
+        if (response.status === 200) {
+        } else {
+          this.$message.error(JSON.stringify(response.statusMessage));
+        }
+      })
     }
   },
   mounted() {
@@ -80,12 +100,17 @@ body
 .page-main
   text-align center
   padding-top 200px
-  .el-input__inner
-    width 500px
-  .el-input-group__prepend
+  .input-with-select
     .el-input__inner
-      width 110px
-  .noe-search
-    background-color rgb(84, 92, 100) !important
-    color #ffffff !important
+      width 500px
+    .el-input-group__prepend
+      .el-input__inner
+        width 110px
+    .noe-search
+      background-color rgb(84, 92, 100) !important
+      color #ffffff !important
+  .smart_res
+    width 62%
+    margin 0 auto
+    text-align left
 </style>
