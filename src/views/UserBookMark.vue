@@ -67,7 +67,7 @@
         }).then(response => {
           console.log(response)
           response = response.data;
-          if(response.status == 200 && response.data.length>0){
+          if(response.status == 200){
             if(response.data.length>0){
               this.collections = response.data
               this.collectionsNum = response.data.length

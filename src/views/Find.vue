@@ -2,7 +2,7 @@
   <div class="find">
     <h1>发现别人家的事</h1>
     <keep-alive>
-      <List></List>
+      <List :dataList="findLists"></List>
     </keep-alive>
   </div>
 </template>
@@ -14,7 +14,7 @@ export default {
   },
   data () {
     return {
-
+      findLists: []
     }
   },
   mounted(){
@@ -32,6 +32,9 @@ export default {
       }).then(response => {
           console.log(response)
           response = response.data;
+          if(response.status == 200){
+            this.findLists = response.data
+          }
       })
     }
   }
