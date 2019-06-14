@@ -4,7 +4,7 @@
       	<el-button type="primary" icon="el-icon-edit-outline" @click="EditingArticlesDialogVisible = true">发表文章</el-button>
     	</div>
 			<keep-alive>
-				<List :dataList="essaysList" :style="listEssay"></List>
+				<List :dataList="essaysList" :styles="listEssay"></List>
 			</keep-alive>
 			<el-dialog
 				title="编辑文章"

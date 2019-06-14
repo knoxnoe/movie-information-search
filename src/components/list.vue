@@ -7,9 +7,11 @@
                 <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
             </div>
             <div class="text item">
-                {{'内容 ' + item.content }}
-                {{'作者 ' + item.user }}
-                {{'时间 ' + item.created_date }}
+                <p>{{'内容 ' + item.content }}</p>
+                <p>{{'作者 ' + item.user }}</p>
+                <p>{{'时间 ' + item.created_date }}</p>
+                <p>{{'影名 ' + item.movie.title }}</p>
+                <p>{{'评分 ' + item.movie.rating }}</p>
             </div>
         </el-card>
       </div>
@@ -20,7 +22,7 @@
                 <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
             </div>
             <div class="text item">
-                <p>{{'标题 ' + item.movie.title }}</p>
+                <p>{{'影名 ' + item.movie.title }}</p>
                 <p>{{'概述 ' + item.movie.summary }}</p>
                 <p>{{'评分 ' + item.movie.rating }}</p>
             </div>

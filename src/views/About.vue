@@ -1,7 +1,7 @@
 <template>
   <div class="about">
     <h1>圈子里的那点事</h1>
-    <List ></List>
+    <List :dataList="aboutLists"></List>
   </div>
 </template>
 <script>
@@ -12,7 +12,7 @@ export default {
   },
   data () {
     return {
-
+      aboutLists: ''
     }
   },
   mounted(){
@@ -31,7 +31,7 @@ export default {
 				console.log(response)
 				response = response.data
 				if (response.status === 200) {
-					
+					this.aboutLists = response.data
 				} else {
 					this.$message.error(JSON.stringify(response.statusMessage));
 				}
