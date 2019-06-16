@@ -192,5 +192,8 @@ export default {
         width 68%
         display inline-block
         padding-left 2%
-        vertical-align sub
+        vertical-align middle
+        overflow hidden
+        p
+          height 20px
 </style>

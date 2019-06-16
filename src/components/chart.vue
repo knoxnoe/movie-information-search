@@ -95,6 +95,7 @@ export default {
           }
         });
         //length不一定存在，后面再说
+        if(!this.chart_rdf[0]) return false
         if(this.chart_rdf[0].movies){
           this.proxydata.push({
             id : this.chart_rdf[0].id,
@@ -241,13 +242,11 @@ export default {
       //点击电影节点请求人
       onChartClickmovie: function(param){
         // this.$emit('childmessage',param)
-        console.log(param)
         this.httpPerson(param.url)
       },
       //点击人节点请求电影
       onChartClickperson: function(param){
         // this.$emit('childmessage',param)
-        console.log(param)
         this.httpMovie(param.url)
       }
   }

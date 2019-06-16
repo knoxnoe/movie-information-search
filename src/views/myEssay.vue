@@ -81,48 +81,49 @@ export default {
 			essaysList:[],
 			movie: '',
 			restaurants: [],
-			listEssay: true
+			listEssay: true,
+			movidId: ''
    		 }
 	},
 	mounted(){
 		this.getArticles()
 		this.restaurants = this.loadAll()	
 	},
-	computed:{
-		
-	},
 	methods: {
-		querySearch(queryString, cb) {
-			var results
+		async querySearch(queryString, cb) {
 			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/movie/search/'
-			this.axios.get(PostUrl, {
+			await this.axios.get(PostUrl, {
 				params: {
 					title: queryString
 				}
 			}).then(response => {
-				console.log(response)
 				response = response.data
 				if (response.status === 200) {
 					this.restaurants = response.data
-					console.log(this.restaurants)
-					var restaurants = this.restaurants;
-					results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-					console.log(results)
-					// 调用 callback 返回建议列表的数据
-					cb(results);
 				} else {
 					this.$message.error(JSON.stringify(response.statusMessage));
 				}
 			})
-			// var restaurants = this.restaurants;
-			// results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-			// console.log(results)
-			// cb(results);
+			var restaurants = this.restaurants;
+			var keyMap = {
+				"title" : "value"
+			};
+			restaurants.forEach(function(item,index){
+				for(var key in item){
+					var newKey = keyMap[key]
+					if(newKey){
+                        item[newKey] = item[key];
+                        delete item[key];
+                     }
+				}
+			})
+        	var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+			cb(results);
 			
 		},
 		createFilter(queryString) {
 			return (restaurant) => {
-				return (restaurant.title.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+				return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
 			};
 		},
 		loadAll() {
@@ -131,8 +132,11 @@ export default {
 				{ "value": "南拳妈妈龙虾盖浇饭", "address": "普陀区金沙江路1699号鑫乐惠美食广场A13" }
 			];
 		},
+		getRecommedList(queryString){
+			
+		},
 		handleSelect(item) {
-			console.log(item);
+			this.movidId = item.id
 		},
 		submitUpload() {//提交上传文章
 			this.$refs.upload.submit();
@@ -146,24 +150,36 @@ export default {
 		handlePictureCardPreview(file) {
 			this.dialogImageUrl = file.url;
 				this.dialogVisible = true;
-				console.log(fileList)
 			},
-			publishArticle(){//发表文章
-				if(this.textarea.length > 0){
-					this.EditingArticlesDialogVisible = false
-					var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/article/'
-			this.axios.post(PostUrl, {
-				content: this.textarea,
-				token: this.$store.state.UserState.token
-			}).then(response => {
-				console.log(response)
-				response = response.data
-				if (response.status === 200) {
-				} else {
-				this.$message.error(JSON.stringify(response.statusMessage));
+		publishArticle(){//发表文章
+			var param
+			if(this.movidId){
+				param = {
+					content: this.textarea,
+					token: this.$store.state.UserState.token,
+					movie_id: this.movidId
 				}
-			}) 
-				}else{
+			}else{
+				param = {
+					content: this.textarea,
+					token: this.$store.state.UserState.token
+				}
+			}
+			
+			if(this.textarea.length > 0){
+				this.EditingArticlesDialogVisible = false
+				var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/article/'
+				this.axios.post(PostUrl, param).then(response => {
+					console.log(response)
+					this.movidId = ''
+					response = response.data
+					if (response.status === 200) {
+						this.getArticles()
+					} else {
+					this.$message.error(JSON.stringify(response.statusMessage));
+					}
+				}) 
+			}else{
 					this.$message.error('文章内容不能为空');
 				}
 			},
@@ -176,7 +192,6 @@ export default {
 				end: 20
 				}
 			}).then(response => {
-				console.log(response)
 				response = response.data
 				if (response.status === 200) {
 					this.essaysList = response.data

@@ -60,10 +60,12 @@ export default {
     search(){
       if(this.select == 1 && this.input.length>0){//搜索分类分支1
         this.$cookie.set('currentSearchText', this.input, 1)
-        this.$router.push({name: 'res', params: {searchText: this.input}})
+        this.$cookie.set('searchStyle', '1', 1)
+        this.$router.push({name: 'res', params: {searchText: this.input,searchStyle: '1'}})
       }else if(this.select == 2 && this.input.length>0){//搜索分类分支2
         this.$cookie.set('currentSearchText', this.input, 1)
-        this.$router.push({name: 'res', params: {searchText: this.input}})
+        this.$cookie.set('searchStyle', '2', 1)
+        this.$router.push({name: 'res', params: {searchText: this.input,searchStyle: '2'}})
       }else{
         var h = this.$createElement;
         this.$notify({

@@ -2,6 +2,9 @@
   <div class='page-res'>
     <div class="reschart">
       <!-- <keep-alive> -->
+        <div v-if="!flag" style="text-align:center">
+            <h1>正在搜索中......</h1>
+        </div>
         <chart :rdf="rdfdata" v-if="flag"></chart>
         <!-- v-on:childmessage="changesummary" :centersearch="search" -->
       <!-- </keep-alive> -->
@@ -24,6 +27,7 @@ export default {
       rdfdata: [],
       flag: false,
       search: '',
+      searchStyle: ''
   }),
   components: {
     chart
@@ -65,7 +69,8 @@ export default {
   },
   mounted () {//根据home页面传来的值进行搜索
     this.search = this.$route.params.searchText || this.$store.state.UserState.currentSearchText
-    if(this.search.length > 3){//智能搜索
+    this.searchStyle = this.$route.params.searchStyle || this.$store.state.UserState.searchStyle
+    if(this.searchStyle == '1'){//智能搜索
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/smart_search/'
       this.axios.get(PostUrl, {
         params: {
@@ -73,7 +78,7 @@ export default {
         }
       }).then(response => {
         response = response.data
-        if (response.status === 200) {
+        if (response.status === 200 && response.data[0] != '') {
           this.rdfdata.push(response.data[0]);
           this.flag = true
         } else {
@@ -88,7 +93,7 @@ export default {
         }
       }).then(response => {
           response = response.data
-          if (response.status === 200) {
+          if (response.status === 200 && response.data[0] != '') {
             this.rdfdata.push(response.data[0]);
             this.flag = true
           } else {

@@ -26,7 +26,8 @@ const UserState = {//登陆用户状态管理
     logonStatus: false,
     token: '',
     username: '',
-    currentSearchText: VueCookie.get('currentSearchText')
+    currentSearchText: VueCookie.get('currentSearchText'),
+    searchStyle: VueCookie.get('searchStyle')
   },
   mutations: {
     judgeLogonStatus(state){
