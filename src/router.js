@@ -48,5 +48,15 @@ export default new Router({
       name: 'myEssay',
       component: () => import('./views/myEssay.vue')
     },
+    {
+      path: '/subArticle',
+      name: 'subArticle',
+      component: () => import('./views/sub/subUserArticles.vue')
+    },
+    {
+      path: '/subBookMark',
+      name: 'subBookMark',
+      component: () => import('./views/sub/subUserBookMark.vue')
+    },
   ]
 })
