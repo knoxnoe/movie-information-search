@@ -15,7 +15,7 @@ export default {
   data () {
     return {
       findLists: [],
-      listFind: false
+      listFind: '_listStyle2'
     }
   },
   mounted(){

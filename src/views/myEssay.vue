@@ -81,7 +81,7 @@ export default {
 			essaysList:[],
 			movie: '',
 			restaurants: [],
-			listEssay: true,
+			listEssay: '_listStyle1',
 			movidId: ''
    		 }
 	},

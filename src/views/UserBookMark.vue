@@ -11,7 +11,7 @@
         :name="item.id">
         <!-- {{item.content}} -->
         <div>
-          <List></List>
+          <List :dataList="BookMarkEssaysList" :styles="listEssay"></List>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -48,7 +48,9 @@
           name: '',
           region: '',
         },
-        formLabelwidth: '120px'
+        formLabelwidth: '120px',
+        listEssay:'_listStyle3',
+        BookMarkEssaysList: []
       }
     },
     components:{
@@ -164,6 +166,9 @@
         }).then(response => {
           console.log(response)
           response = response.data
+          if(response.status == 200){
+            this.BookMarkEssaysList = response.data
+          }
         })
       }
     }

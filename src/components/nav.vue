@@ -7,7 +7,7 @@
             @select="handleSelect"
             background-color="#545c64"
             text-color="#fff"
-            active-text-color="#ffd04b">
+            active-text-color="#fff">
             <el-menu-item index="#" disabled>电影采撷狮</el-menu-item>
             <el-menu-item index="/">知识图谱</el-menu-item>
             <el-menu-item index="/about">圈子</el-menu-item>
