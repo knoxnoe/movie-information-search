@@ -1,5 +1,5 @@
 <template>
-    <div class="list-noe">
+    <div class="list-noe" ref="container">
       <div v-if="listStyle=='_listStyle1'">
         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
             <div slot="header" class="clearfix">
@@ -25,8 +25,8 @@
             </div>
         </el-card>
       </div>
-      <div v-if="listStyle=='_listStyle2'">
-         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
+      <div v-if="listStyle=='_listStyle2'"  ref="inner">
+         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card list-card2"  shadow="hover">
             <div slot="header" class="clearfix">
                 <span v-if="item.movie == null" class="text">{{'无电影文章'}}</span>
                 <span v-else class="text">{{'电影：'+item.movie.title}}</span>
@@ -72,7 +72,7 @@
             </div>
         </el-card>
       </div>
-      <div class="loadmore">
+      <div class="loadmore" ref="loading">
         <span>已经没了</span>
       </div>
       <el-dialog
@@ -111,7 +111,8 @@ export default {
       checkAll: false,
       checkedCities: [],
       cities: '',
-      isIndeterminate: true
+      isIndeterminate: true,
+      start: 5
     }
   },
   computed:{
@@ -120,7 +121,7 @@ export default {
         return this.dataList
       },
       set:function(val){
-        console.log(val)
+        
       }
     },
     collection: {
@@ -128,15 +129,38 @@ export default {
         return this.collections
       },
       set:function(val){
-        console.log(val)
+        
       }
     }
   },
   mounted(){
     this.list = this.dataList
     this.listStyle = this.styles
+    this.$refs.container.addEventListener('scroll', this.scroll)
   },
   methods:{
+    scroll() {
+      let top = this.$refs.container.scrollTop
+      let vh = this.$refs.inner.clientHeight
+      let height = this.$refs.loading.offsetTop
+      if(vh - top - 520 < 20){
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/movie/'
+        this.api.get(PostUrl,{
+            token: this.$store.state.UserState.token,
+            start: this.start,
+            end: this.start+5
+        }).then(response => {
+            console.log(response)
+            if(response.status == 200){
+              for(var i in response.data){
+                this.list.push(response.data[i])
+              }
+            }
+            this.start+=5
+        })
+      }
+      console.log(top,vh,height)
+    },
     goArticle(articleId){//去正文
       console.log(articleId)
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/read/' + articleId +'/'
@@ -212,11 +236,8 @@ export default {
                this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
             }
           }else{
-             this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
-          }
-        }else{
            this.$message.error(JSON.stringify(response.statusMessage));
-        }
+          }
       })
     },
   }
@@ -228,12 +249,14 @@ body
 .users
   margin-left 20px
 .list-noe
-  height 68vh
+  height 100%
   overflow scroll
   &::-webkit-scrollbar
     display: none;
   .list-card
     margin-top 20px
+  .list-card2
+    height 520px
     .el-card__header
       cursor pointer
       .clearfix
@@ -248,5 +271,5 @@ body
         margin-right 20px
   .loadmore
     text-align center
-    height 50px
+    height 150px
 </style>

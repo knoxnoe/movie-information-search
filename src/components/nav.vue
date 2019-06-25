@@ -276,8 +276,10 @@ export default {
 
 <style lang="stylus">
 body
-  margin 0px
+    margin 0px
 .nav
+    height: 8vh;
+    overflow: hidden;
     .el-menu-item.is-disabled
         opacity 1
         cursor default

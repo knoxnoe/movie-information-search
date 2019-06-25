@@ -15,7 +15,8 @@ export default {
   data () {
     return {
       findLists: [],
-      listFind: '_listStyle2'
+      listFind: '_listStyle2',
+      start: 0
     }
   },
   mounted(){
@@ -24,18 +25,18 @@ export default {
   methods:{
     getFindList(){
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/movie/'
-      this.axios.get(PostUrl,{
-        params: {
-          'token': this.$store.state.UserState.token,
-          start: 0,
-          end: 20
-        }
+      this.api.get(PostUrl,{
+          token: this.$store.state.UserState.token,
+          start: this.start,
+          end: this.start+5
       }).then(response => {
           console.log(response)
-          response = response.data;
           if(response.status == 200){
-            this.findLists = response.data
+            for(var i in response.data){
+              this.findLists.push(response.data[i])
+            }
           }
+          this.start+=5
       })
     }
   }
@@ -45,5 +46,7 @@ export default {
 body
   margin 0px
 .find
-  padding 20px 40px
+  padding 0 40px
+  height 92vh
+  overflow hidden
 </style>
