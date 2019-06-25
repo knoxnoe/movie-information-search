@@ -1,48 +1,49 @@
 <template>
-    <div class="subUser">
-        <h1>{{currentName+ '个人主页'}}</h1>
-	    <List :dataList="essaysList" :styles="listEssay"></List>
-    </div>
+  <div class="subUser">
+    <h1>{{currentName+ '个人主页'}}</h1>
+    <List :dataList="essaysList" :styles="listEssay"></List>
+  </div>
 </template>
 <script>
-const List = () => import('@/components/list.vue')
-export default { 
-    data(){
-        return {
-            currentName: '',
-            essaysList: '',
-            listEssay: true,
-        }
+  const List = () => import('@/components/list.vue')
+  export default {
+    data() {
+      return {
+        currentName: '',
+        essaysList: '',
+        listEssay: true,
+      }
     },
-    components:{
-    	List
-	},
-    mounted(){
-        this.currentName = this.$route.params.targetName || this.$store.state.UserState.subName
-        this.getArticles()
+    components: {
+      List
     },
-    methods:{
-        getArticles(){
-			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/'+ this.currentName + '/articles/'
-			this.api.get(PostUrl, {
-				username: this.currentName,
-				start: 0,
-				end: 20
-			}).then(response => {
+    mounted() {
+      this.currentName = this.$route.params.targetName || this.$store.state.UserState.subName
+      this.getArticles()
+    },
+    methods: {
+      getArticles() {
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/' + this.currentName + '/articles/'
+        this.api.get(PostUrl, {
+          username: this.currentName,
+          start: 0,
+          end: 20
+        }).then(response => {
 
-				if (response.status === 200) {
-					this.essaysList = response.data
-				} else {
-					this.$message.error(JSON.stringify(response.statusMessage));
-				}
-			}) 
-		}
+          if (response.status === 200) {
+            this.essaysList = response.data
+          } else {
+            this.$message.error(JSON.stringify(response.statusMessage));
+          }
+        })
+      }
     }
-}
+  }
 </script>
 <style lang="stylus">
-body
-  margin 0px
-.subUser
-  padding 20px 40px
+  body
+    margin 0px
+
+  .subUser
+    padding 20px 40px
 </style>

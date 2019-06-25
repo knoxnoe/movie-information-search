@@ -5,10 +5,10 @@
     </div>
     <el-tabs v-model="collectionId" type="card" closable @tab-remove="removeCollection" @tab-click="checkCollection">
       <el-tab-pane
-        v-for="(item, index) in collections"
-        :key="item.id"
-        :label="item.name"
-        :name="item.id">
+              v-for="(item, index) in collections"
+              :key="item.id"
+              :label="item.name"
+              :name="item.id">
         <!-- {{item.content}} -->
         <div>
           <List :dataList="BookMarkEssaysList" :styles="listEssay"></List>
@@ -37,6 +37,7 @@
 </template>
 <script>
   import List from '@/components/list.vue'
+
   export default {
     data() {
       return {
@@ -44,38 +45,38 @@
         collections: [],
         collectionsNum: 0,
         dialogCollectionsVisible: false,
-        form:{
+        form: {
           name: '',
           region: '',
         },
         formLabelwidth: '120px',
-        listEssay:'_listStyle3',
+        listEssay: '_listStyle3',
         BookMarkEssaysList: []
       }
     },
-    components:{
+    components: {
       List
     },
-    mounted(){
+    mounted() {
       this.getListOfBookMark()
     },
     methods: {
-      getListOfBookMark(){//挂在组件将请求的数据初始化
+      getListOfBookMark() {//挂在组件将请求的数据初始化
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
-        this.api.get(PostUrl,{
-            token: this.$store.state.UserState.token
+        this.api.get(PostUrl, {
+          token: this.$store.state.UserState.token
         }).then(response => {
           console.log(response)
-          if(response.status == 200){
-            if(response.data.length>0){
+          if (response.status == 200) {
+            if (response.data.length > 0) {
               this.collections = response.data
               this.collectionsNum = response.data.length
               this.collectionId = response.data[0].id
-            }else{
-               this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
+            } else {
+              this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
             }
-          }else{
-             this.$message.error(JSON.stringify(response.statusMessage));
+          } else {
+            this.$message.error(JSON.stringify(response.statusMessage));
           }
         })
       },
@@ -83,15 +84,15 @@
       affirmCollection() {//确认创建文件夹信息
         var numPrivate = new Number(this.form.region)
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'
-        this.api.post(PostUrl,{
-            token: this.$store.state.UserState.token,
-            name: this.form.name,
-            private: numPrivate  
+        this.api.post(PostUrl, {
+          token: this.$store.state.UserState.token,
+          name: this.form.name,
+          private: numPrivate
         }).then(response => {
           console.log(response)
-          if(response.status == 200){
-            this.addCollection(response.data.name,response.data.id)
-          }else{
+          if (response.status == 200) {
+            this.addCollection(response.data.name, response.data.id)
+          } else {
             this.$message.error(JSON.stringify(response.statusMessage));
           }
         })
@@ -99,7 +100,7 @@
       createCollection() { //创建收藏夹
         this.dialogCollectionsVisible = true
       },
-      addCollection(targetName,targetId){//将创建好的进行UI添加
+      addCollection(targetName, targetId) {//将创建好的进行UI添加
         var newTabName = targetName;
         //++this.collectionsNum + '';
         this.collections.push({
@@ -130,10 +131,10 @@
             type: 'info',
             message: '已取消删除'
           });
-          return 0;      
+          return 0;
         });
       },
-      remove(targetId){
+      remove(targetId) {
         var tabs = this.collections;
         var activeId = this.collectionId;
         if (activeId === targetId) {
@@ -150,16 +151,16 @@
         this.collections = tabs.filter(tab => tab.id !== targetId);
       },
 
-      checkCollection(item){
-        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'+item.$options.propsData.name+'/'
-        this.api.get(PostUrl,{
-            token: this.$store.state.UserState.token,
-            collection_id: item.$options.propsData.name,
-            start: 0,
-            end: 20
+      checkCollection(item) {
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/' + item.$options.propsData.name + '/'
+        this.api.get(PostUrl, {
+          token: this.$store.state.UserState.token,
+          collection_id: item.$options.propsData.name,
+          start: 0,
+          end: 20
         }).then(response => {
           console.log(response)
-          if(response.status == 200){
+          if (response.status == 200) {
             this.BookMarkEssaysList = response.data
           }
         })
@@ -168,10 +169,12 @@
   }
 </script>
 <style lang="stylus">
-body
-  margin 0
-.bookMark
-  padding 20px
-.collectionName
-  width auto
+  body
+    margin 0
+
+  .bookMark
+    padding 20px
+
+  .collectionName
+    width auto
 </style>
