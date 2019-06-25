@@ -187,7 +187,6 @@ export default {
         var that = this;
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1' + url
         vue.axios.get(PostUrl).then(response => {
-          response = response.data
           if(response.status === 200){
             var temp = response.data;
             for(var i=0;i<temp.movies.length;i++){
@@ -215,7 +214,6 @@ export default {
         var that = this;
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1' + url
         vue.axios.get(PostUrl).then(response => {
-          response = response.data
           if(response.status === 200){
             var temp = response.data;
             for(var i=0;i<temp.persons.length;i++){

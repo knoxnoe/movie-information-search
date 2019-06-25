@@ -210,11 +210,10 @@ export default {
             this.$refs[formName].validate((valid) => {//验证表单是否合规
                 if (valid) {              
                     var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/login/'
-                    this.axios.post(PostUrl, {
+                    this.api.post(PostUrl, {
                         username: this.formsignin.user,
                         password: this.formsignin.pwd,
                     }).then(response => {
-                        response = response.data
                         if (response.status === 200) {
                             this.$cookie.set('token', response.token, 1)
                             this.$cookie.set('username', this.formsignin.user, 1)
@@ -242,12 +241,11 @@ export default {
             this.$refs[formName].validate((valid) => {//验证表单是否合规
                 if (valid) {
                     var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/join/'
-                    this.axios.post(PostUrl,{
+                    this.api.post(PostUrl,{
                         'username': this.formsignup.user,
                         'nickname': 'noe',
                         'password': this.formsignup.pwd,
                     }).then(response => {
-                        response = response.data;
                         if (response.status === 200) {
                             this.dialogFormVisibleSignup = false //关闭注册dialog
                             this.dialogFormVisibleSignin = true  //打开登陆dialog

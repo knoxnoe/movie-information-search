@@ -92,12 +92,9 @@ export default {
 	methods: {
 		async querySearch(queryString, cb) {
 			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/movie/search/'
-			await this.axios.get(PostUrl, {
-				params: {
+			await this.api.get(PostUrl, {
 					title: queryString
-				}
 			}).then(response => {
-				response = response.data
 				if (response.status === 200) {
 					this.restaurants = response.data
 				} else {
@@ -169,10 +166,9 @@ export default {
 			if(this.textarea.length > 0){
 				this.EditingArticlesDialogVisible = false
 				var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/article/'
-				this.axios.post(PostUrl, param).then(response => {
+				this.api.post(PostUrl, param).then(response => {
 					console.log(response)
 					this.movidId = ''
-					response = response.data
 					if (response.status === 200) {
 						this.getArticles()
 					} else {
@@ -185,14 +181,11 @@ export default {
 			},
 		getArticles(){
 			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/'+ this.$store.state.UserState.username + '/articles/'
-			this.axios.get(PostUrl, {
-				params: {
+			this.api.get(PostUrl, {
 				username: this.$store.state.UserState.username,
 				start: 0,
 				end: 20
-				}
 			}).then(response => {
-				response = response.data
 				if (response.status === 200) {
 					this.essaysList = response.data
 				} else {
