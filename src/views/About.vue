@@ -26,7 +26,6 @@ export default {
 				start: 0,
 				end: 20
 			}).then(response => {
-				console.log(response)
 				if (response.status === 200) {
 					this.aboutLists = response.data
 				} else {

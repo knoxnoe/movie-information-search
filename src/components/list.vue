@@ -10,7 +10,7 @@
                 <el-button style="float: right; padding: 3px 0" type="text" @click="collect(item.article_id)">收藏文章</el-button>
             </div>
             <div class="text item">
-              <img v-if="item.movie != null" :src="'http://editme.top:7000/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
+              <img v-if="item.movie != null" :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
               <div class="movieDetail">
                 <div v-if="item.movie != null">
                   <p>{{'电影名：'+item.movie.title}}</p>
@@ -33,7 +33,7 @@
                 <!-- <el-button style="float: right; padding: 3px 0" type="text" @click="collect">收藏电影</el-button> -->
             </div>
             <div v-if="item.movie != null" >
-              <img :src="'http://editme.top:7000/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
+              <img :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
               <div class="text item">
                   <p>{{'标签：'+item.movie.genres}}</p>
                   <p>{{'评分 ' + item.movie.rating }}</p>
@@ -55,7 +55,7 @@
                 <el-button style="float: right; padding: 3px 0" type="text" @click="collect(item.article_id)">收藏文章</el-button>
             </div>
             <div class="text item">
-              <img v-if="item.movie != null" :src="'http://editme.top:7000/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
+              <img v-if="item.movie != null" :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
               <div class="movieDetail">
                 <div v-if="item.movie != null">
                   <p>{{'电影名：'+item.movie.title}}</p>
@@ -144,6 +144,7 @@ export default {
       let vh = this.$refs.inner.clientHeight
       let height = this.$refs.loading.offsetTop
       if(vh - top - 520 < 20){
+        console.log('bao')
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/movie/'
         this.api.get(PostUrl,{
             token: this.$store.state.UserState.token,
