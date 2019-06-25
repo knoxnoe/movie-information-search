@@ -10,7 +10,7 @@
               :fetch-suggestions="querySearch"
               :trigger-on-focus="false"
               @select="handleSelect">
-        <el-select v-model="select" slot="prepend" placeholder="请选择">
+        <el-select v-model="select" slot="prepend">
           <el-option label="知识图谱" value="1"></el-option>
           <el-option label="知识问答" value="2"></el-option>
         </el-select>
@@ -27,7 +27,7 @@
     data() {
       return {
         input: '',
-        select: '',
+        select: '1',
         restaurants: [],
         smartRes: false
       }
