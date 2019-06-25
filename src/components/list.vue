@@ -13,7 +13,7 @@
           </div>
           <div class="text item">
             <img v-if="item.movie != null"
-                 :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
+                 :src="'https://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
             <div class="movieDetail">
               <div v-if="item.movie != null">
                 <p>{{'电影名：'+item.movie.title}}</p>
@@ -41,7 +41,7 @@
             <!-- <el-button style="float: right; padding: 3px 0" type="text" @click="collect">收藏电影</el-button> -->
           </div>
           <div v-if="item.movie != null">
-            <img :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
+            <img :src="'https://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
             <div class="text item">
               <p>{{'标签：'+item.movie.genres}}</p>
               <p>{{'评分 ' + item.movie.rating }}</p>
@@ -71,7 +71,7 @@
           </div>
           <div class="text item">
             <img v-if="item.movie != null"
-                 :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
+                 :src="'https://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
             <div class="movieDetail">
               <div v-if="item.movie != null">
                 <p>{{'电影名：'+item.movie.title}}</p>
