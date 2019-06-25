@@ -20,7 +20,7 @@
                   <p>{{'概述：'+item.movie.summary}}</p>
                 </div>
                 <p>{{'内容 ' + item.content }}</p>
-                <el-link @click="goArticle">查看全文<i class="el-icon-view el-icon--right"></i></el-link>
+                <el-link @click="goArticle(item.article_id)">查看全文<i class="el-icon-view el-icon--right"></i></el-link>
               </div>
             </div>
         </el-card>
@@ -65,7 +65,9 @@
                   <p>{{'概述：'+item.movie.summary}}</p>
                 </div>
                 <p>{{'内容 ' + item.content }}</p>
-                <el-link @click="goArticle">查看全文<i class="el-icon-view el-icon--right"></i></el-link>
+                <div @click="goArticle(item.article_id)">
+                  <el-link>查看全文<i class="el-icon-view el-icon--right"></i></el-link>
+                </div>
               </div>
             </div>
         </el-card>
@@ -135,7 +137,21 @@ export default {
     this.listStyle = this.styles
   },
   methods:{
-    goArticle(){//去正文
+    goArticle(articleId){//去正文
+      console.log(articleId)
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/read/' + articleId +'/'
+      this.axios.post(PostUrl,{
+        token: this.$store.state.UserState.token,
+        article_id: articleId
+      }).then(response => {
+        console.log(response)
+        response = response.data;
+        if(response.status == 200){
+
+        }else{
+           this.$message.error(JSON.stringify(response.statusMessage));
+        }
+      })
       this.$router.push({name: 'article'})
     },
     handleCheckAllChange(val) {
@@ -185,25 +201,25 @@ export default {
       }
     },
     getListOfBookMark(){//挂在组件将请求的数据初始化
-        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
-        this.axios.get(PostUrl,{
-          params: {
-            token: this.$store.state.UserState.token
-          }
-        }).then(response => {
-          console.log(response)
-          response = response.data;
-          if(response.status == 200){
-            if(response.data.length>0){
-              this.cities = response.data
-            }else{
-               this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
-            }
+      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
+      this.axios.get(PostUrl,{
+        params: {
+          token: this.$store.state.UserState.token
+        }
+      }).then(response => {
+        console.log(response)
+        response = response.data;
+        if(response.status == 200){
+          if(response.data.length>0){
+            this.cities = response.data
           }else{
-             this.$message.error(JSON.stringify(response.statusMessage));
+             this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
           }
-        })
-      },
+        }else{
+           this.$message.error(JSON.stringify(response.statusMessage));
+        }
+      })
+    },
   }
 }
 </script>

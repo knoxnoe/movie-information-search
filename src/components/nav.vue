@@ -243,10 +243,11 @@ export default {
                 if (valid) {
                     var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/join/'
                     this.axios.post(PostUrl,{
-                        'username': this.formsignup.user,
-                        'nickname': 'noe',
-                        'password': this.formsignup.pwd,
+                        username: this.formsignup.user,
+                        nickname: 'noe',
+                        password: this.formsignup.pwd,
                     }).then(response => {
+                        console.log(response)
                         response = response.data;
                         if (response.status === 200) {
                             this.dialogFormVisibleSignup = false //关闭注册dialog
@@ -300,7 +301,6 @@ body
             line-height 15px
             padding 0 4px
     .el-form
-        padding: 0 160px;
         .signin,.signup
             width 100%
             background-color rgb(84, 92, 100)
