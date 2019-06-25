@@ -72,12 +72,9 @@ export default {
     this.searchStyle = this.$route.params.searchStyle || this.$store.state.UserState.searchStyle
     if(this.searchStyle == '1'){//智能搜索
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/smart_search/'
-      this.axios.get(PostUrl, {
-        params: {
+      this.api.get(PostUrl, {
           query: this.search
-        }
       }).then(response => {
-        response = response.data
         if (response.status === 200 && response.data[0] != '') {
           this.rdfdata.push(response.data[0]);
           this.flag = true
@@ -87,12 +84,9 @@ export default {
       })
     }else{//知识图谱
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/search/'
-      this.axios.get(PostUrl,{
-        params: {
+      this.api.get(PostUrl,{
           name: this.search
-        }
       }).then(response => {
-          response = response.data
           if (response.status === 200 && response.data[0] != '') {
             this.rdfdata.push(response.data[0]);
             this.flag = true

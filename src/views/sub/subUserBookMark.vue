@@ -24,14 +24,12 @@ export default {
     methods:{
         getArticles(){
 			var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/'+ this.currentName + '/articles/'
-			this.axios.get(PostUrl, {
-				params: {
+			this.api.get(PostUrl, {
 				username: this.currentName,
 				start: 0,
 				end: 20
-				}
 			}).then(response => {
-				response = response.data
+
 				if (response.status === 200) {
 					this.essaysList = response.data
 				} else {
