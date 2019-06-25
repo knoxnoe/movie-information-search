@@ -14,8 +14,8 @@
               </div>
             </div>
             <div class="op">
-              <p>{{'昵称：'+o.username}}</p>
-              <el-button type="text" class="get_followee" @click="followOne(o.username)">关注ta</el-button>
+              <p>{{'昵称：'+o.user.nickname}}</p>
+              <el-button type="text" class="get_followee" @click="followOne(o.user.username)">关注 TA</el-button>
             </div>
           </el-card>
         </el-col>
@@ -34,8 +34,8 @@
               </div>
             </div>
             <div class="op" style="padding: 14px;">
-              <p>{{'name：'+o.username}}</p>
-              <p>{{'发表文章数：'+o.article_count}}</p>
+              <p>昵称：{{ o.username }}</p>
+              <p>发表文章数：{{ o.article_count }}</p>
               <div class="bottom clearfix">
                 <time class="time"></time>
                 <!-- {{ currentDate }} -->
