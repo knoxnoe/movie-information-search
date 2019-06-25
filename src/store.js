@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 Vue.use(Vuex)
 var VueCookie = require('vue-cookie')
 
@@ -9,15 +10,9 @@ const BaseConfig = {//一些全局变量（关于配置...）
     httpsUrl: 'http://movie.sqy.xyz',
     loadListNum: 10
   },
-  mutations: {
-
-  },
-  getters: {
-
-  },
-  actions: {
-
-  }
+  mutations: {},
+  getters: {},
+  actions: {}
 }
 
 const UserState = {//登陆用户状态管理
@@ -31,27 +26,23 @@ const UserState = {//登陆用户状态管理
     subName: VueCookie.get('subName'),
   },
   mutations: {
-    judgeLogonStatus(state){
-      if(!VueCookie.get('token') || VueCookie.get('token')=='false'){
+    judgeLogonStatus(state) {
+      if (!VueCookie.get('token') || VueCookie.get('token') == 'false') {
         state.logonStatus = false
-      }else{
+      } else {
         state.token = VueCookie.get('token')
         state.username = VueCookie.get('username')
         state.logonStatus = true
       }
     },
-    removeLogonStatus(state){
+    removeLogonStatus(state) {
       state.token = ''
       state.username = ''
       state.logonStatus = false
     }
   },
-  getters: {
-
-  },
-  actions: {
-
-  }
+  getters: {},
+  actions: {}
 }
 
 const PageState = {//页面状态管理
@@ -60,21 +51,17 @@ const PageState = {//页面状态管理
     hashUrl: VueCookie.get('hashUrl')//'/'
   },
   mutations: {
-    saveHashUrl(state,hash) {
+    saveHashUrl(state, hash) {
       state.hashUrl = hash
-      VueCookie.set('hashUrl', hash , 1)
+      VueCookie.set('hashUrl', hash, 1)
     }
   },
-  getters: {
-
-  },
-  actions: {
-
-  }
+  getters: {},
+  actions: {}
 }
 
 export default new Vuex.Store({
-  modules:{
+  modules: {
     BaseConfig: BaseConfig,
     UserState: UserState,
     PageState: PageState

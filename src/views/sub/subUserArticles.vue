@@ -1,12 +1,10 @@
 <template>
-    <div>
-        subUserArticle
-    </div>
+  <div>
+    subUserArticle
+  </div>
 </template>
 <script>
-export default {
-    
-}
+  export default {}
 </script>
 <style lang="stylus">
 
