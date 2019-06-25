@@ -1,7 +1,8 @@
 <template>
     <div class="list-noe" ref="container">
-      <div v-if="listStyle=='_listStyle1'">
-        <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
+      <div v-if="listStyle=='_listStyle1'" class="list list1" ref="inner1">
+        <div>
+          <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card list-card1"  shadow="hover">
             <div slot="header" class="clearfix">
                 <span class="text">{{ item.created_date.substr(0,10)}}</span>
                 <span class="text" @click="goSubUser(item.user)">{{'  |  '+item.user+'  |  '}}</span>
@@ -23,10 +24,15 @@
                 <el-link @click="goArticle(item.article_id)">查看全文<i class="el-icon-view el-icon--right"></i></el-link>
               </div>
             </div>
-        </el-card>
+          </el-card>
+        </div>
+        <div class="loadmore" ref="loading">
+        <span>已经没了</span>
+        </div>
       </div>
-      <div v-if="listStyle=='_listStyle2'"  ref="inner">
-         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card list-card2"  shadow="hover">
+      <div v-if="listStyle=='_listStyle2'" class="list list2" ref="inner2">
+        <div>
+          <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card list-card2"  shadow="hover">
             <div slot="header" class="clearfix">
                 <span v-if="item.movie == null" class="text">{{'无电影文章'}}</span>
                 <span v-else class="text">{{'电影：'+item.movie.title}}</span>
@@ -43,10 +49,15 @@
                 <span v-for="(userItem,index) in item.users" v-bind:key="index" class="users">{{userItem.username }}</span>
               </div>
             </div>
-        </el-card>
+          </el-card>
+        </div>
+        <div class="loadmore" ref="loading">
+          <span>已经没了</span>
+        </div>
       </div>
-      <div v-if="listStyle=='_listStyle3'">
-        <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
+      <div v-if="listStyle=='_listStyle3'" class="list list3" ref="inner3">
+        <div>
+          <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card list-card3"  shadow="hover">
             <div slot="header" class="clearfix">
                 <span class="text">{{ item.created_date.substr(0,10)}}</span>
                 <span class="text" @click="goSubUser(item.user)">{{'  |  '+item.user+'  |  '}}</span>
@@ -70,10 +81,11 @@
                 </div>
               </div>
             </div>
-        </el-card>
-      </div>
-      <div class="loadmore" ref="loading">
-        <span>已经没了</span>
+          </el-card>
+        </div>
+        <div class="loadmore" ref="loading">
+          <span>已经没了</span>
+        </div>
       </div>
       <el-dialog
         title="添加收藏夹"
@@ -120,7 +132,7 @@ export default {
       get:function(){
         return this.dataList
       },
-      set:function(val){
+      set:function(){
         
       }
     },
@@ -128,7 +140,7 @@ export default {
       get:function(){
         return this.collections
       },
-      set:function(val){
+      set:function(){
         
       }
     }
@@ -136,14 +148,24 @@ export default {
   mounted(){
     this.list = this.dataList
     this.listStyle = this.styles
-    this.$refs.container.addEventListener('scroll', this.scroll)
+    if(this.listStyle == '_listStyle1'){
+      console.log('f1')
+      this.$refs.inner1.addEventListener('scroll1', this.scroll)
+    }else if(this.listStyle == '_listStyle2'){
+      console.log('f2')
+      this.$refs.inner2.addEventListener('scroll2', this.scroll)
+    }else{
+      console.log('f3')
+      this.$refs.inner3.addEventListener('scroll3', this.scroll)
+    }
   },
   methods:{
-    scroll() {
+    scroll2() {
       let top = this.$refs.container.scrollTop
-      let vh = this.$refs.inner.clientHeight
+      let vh = this.$refs.inner2.clientHeight
       let height = this.$refs.loading.offsetTop
-      if(vh - top - 520 < 20){
+      let dis = height - vh - top
+      if(-20 < dis && dis < 20){
         console.log('bao')
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/movie/'
         this.api.get(PostUrl,{
@@ -205,11 +227,12 @@ export default {
     confirmCollect(){
       for(var i=0;i<this.checkedCities.length;i++){
         var current = this.checkedCities[i]
-        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/article/'+this.collectId+'/collect/'+current+ '/' 
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'+current+'/collect/'
         this.api.post(PostUrl,{
           token: this.$store.state.UserState.token,
-          article_id: this.collectId,
-          collection_id: current
+          object_id: this.collectId,
+          collection_id: current,
+          type: 'article'
         }).then(response => {
           console.log(response)
           if(response.status == 200){
@@ -273,4 +296,6 @@ body
   .loadmore
     text-align center
     height 150px
+.list
+  height 100%
 </style>

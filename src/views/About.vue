@@ -40,5 +40,7 @@ export default {
 body
   margin 0px
 .about
-  padding 20px 40px
+  padding 0 40px
+  height 92vh
+  overflow hidden
 </style>
