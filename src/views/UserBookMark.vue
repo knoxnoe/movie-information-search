@@ -62,13 +62,10 @@
     methods: {
       getListOfBookMark(){//挂在组件将请求的数据初始化
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
-        this.axios.get(PostUrl,{
-          params: {
+        this.api.get(PostUrl,{
             token: this.$store.state.UserState.token
-          }
         }).then(response => {
           console.log(response)
-          response = response.data;
           if(response.status == 200){
             if(response.data.length>0){
               this.collections = response.data
@@ -86,13 +83,12 @@
       affirmCollection() {//确认创建文件夹信息
         var numPrivate = new Number(this.form.region)
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'
-        this.axios.post(PostUrl,{
+        this.api.post(PostUrl,{
             token: this.$store.state.UserState.token,
             name: this.form.name,
             private: numPrivate  
         }).then(response => {
           console.log(response)
-          response = response.data;
           if(response.status == 200){
             this.addCollection(response.data.name,response.data.id)
           }else{
@@ -156,16 +152,13 @@
 
       checkCollection(item){
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'+item.$options.propsData.name+'/'
-        this.axios.get(PostUrl,{
-          params: {
+        this.api.get(PostUrl,{
             token: this.$store.state.UserState.token,
             collection_id: item.$options.propsData.name,
             start: 0,
             end: 20
-          }
         }).then(response => {
           console.log(response)
-          response = response.data
           if(response.status == 200){
             this.BookMarkEssaysList = response.data
           }

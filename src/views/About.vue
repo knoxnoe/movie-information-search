@@ -21,15 +21,12 @@ export default {
   methods: {
     getFeedsList(){
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/feeds'
-			this.axios.get(PostUrl, {
-				params: {
+			this.api.get(PostUrl, {
 				token: this.$store.state.UserState.token,
 				start: 0,
 				end: 20
-				}
 			}).then(response => {
 				console.log(response)
-				response = response.data
 				if (response.status === 200) {
 					this.aboutLists = response.data
 				} else {

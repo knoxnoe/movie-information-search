@@ -77,13 +77,10 @@ export default {
     },
     smartSearch(){
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/smart_search/'
-      this.axios.get(PostUrl, {
-        params: {
+      this.api.get(PostUrl, {
           query: this.input
-        }
       }).then(response => {
         console.log(response)
-        response = response.data
         if (response.status === 200) {
         } else {
           this.$message.error(JSON.stringify(response.statusMessage));

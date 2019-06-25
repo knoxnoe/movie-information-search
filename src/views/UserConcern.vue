@@ -62,12 +62,11 @@ export default {
   methods: {
     followOne(name){
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/follow/'+ name +'/'
-      this.axios.post(PostUrl, {
+      this.api.post(PostUrl, {
         token: this.$store.state.UserState.token,
         followee_name: name
       }).then(response => {
         console.log(response)
-        response = response.data
         if (response.status === 200) {
           this.getFollowees()
           this.getRecommends()
@@ -78,12 +77,9 @@ export default {
     },
     getRecommends(){
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/user/'
-      this.axios.get(PostUrl, {
-        params: {
+      this.api.get(PostUrl, {
           token: this.$store.state.UserState.token
-        }
       }).then(response => {
-        response = response.data
         if (response.status === 200) {
           this.recommends = response.data
         } else {
@@ -93,14 +89,11 @@ export default {
     },
     getFollowees(){//获取关注人列表
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/'+ this.$store.state.UserState.username + '/followee/'
-      this.axios.get(PostUrl, {
-        params: {
+      this.api.get(PostUrl, {
           username: this.$store.state.UserState.username,
           start: 0,
           end: 20
-        }
       }).then(response => {
-        response = response.data
         if (response.status === 200) {
           this.followee = response.data
         } else {
@@ -110,14 +103,11 @@ export default {
     },
     getOtherArticles(){//获取某人文章
       var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/user/'+ this.$store.state.UserState.username + '/articles/'
-      this.axios.get(PostUrl, {
-        params: {
+      this.api.get(PostUrl, {
           username: this.$store.state.UserState.username,
           start: 0,
           end: 20
-        }
       }).then(response => {
-          response = response.data
           if (response.status === 200) {
           } else {
             this.$message.error(JSON.stringify(response.statusMessage));
@@ -138,12 +128,11 @@ export default {
           message: '取消关注成功!'
         });
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/unfollow/'+ targetName + '/'
-        this.axios.post(PostUrl, {
+        this.api.post(PostUrl, {
             followee_name: targetName,
             token: this.$store.state.UserState.token
         }).then(response => {
             console.log(response)
-            response = response.data
             if (response.status === 200) {
             } else {
               this.$message.error(JSON.stringify(response.statusMessage));
