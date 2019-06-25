@@ -6,11 +6,7 @@ var VueCookie = require('vue-cookie')
 const BaseConfig = {//一些全局变量（关于配置...）
   namespaced: true,
   state: {
-<<<<<<< HEAD
-    httpsUrl: 'http://movie.sqy.xyz',
-=======
     httpsUrl: 'https://movie.sqy.xyz',
->>>>>>> a4d8a83639499705c6fee576a818e42e1bc9c7cc
     loadListNum: 10
   },
   mutations: {

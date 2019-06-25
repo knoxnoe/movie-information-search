@@ -200,19 +200,6 @@ export default {
       }
     },
     getListOfBookMark(){//挂在组件将请求的数据初始化
-<<<<<<< HEAD
-      var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
-      this.axios.get(PostUrl,{
-        params: {
-          token: this.$store.state.UserState.token
-        }
-      }).then(response => {
-        console.log(response)
-        response = response.data;
-        if(response.status == 200){
-          if(response.data.length>0){
-            this.cities = response.data
-=======
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
         this.api.get(PostUrl,{
             token: this.$store.state.UserState.token
@@ -224,7 +211,6 @@ export default {
             }else{
                this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
             }
->>>>>>> a4d8a83639499705c6fee576a818e42e1bc9c7cc
           }else{
              this.$message.warning('你还没有收藏夹，请先创建收藏夹！');
           }

@@ -241,21 +241,11 @@ export default {
             this.$refs[formName].validate((valid) => {//验证表单是否合规
                 if (valid) {
                     var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/join/'
-<<<<<<< HEAD
-                    this.axios.post(PostUrl,{
-                        username: this.formsignup.user,
-                        nickname: 'noe',
-                        password: this.formsignup.pwd,
-                    }).then(response => {
-                        console.log(response)
-                        response = response.data;
-=======
                     this.api.post(PostUrl,{
                         'username': this.formsignup.user,
                         'nickname': 'noe',
                         'password': this.formsignup.pwd,
                     }).then(response => {
->>>>>>> a4d8a83639499705c6fee576a818e42e1bc9c7cc
                         if (response.status === 200) {
                             this.dialogFormVisibleSignup = false //关闭注册dialog
                             this.dialogFormVisibleSignin = true  //打开登陆dialog
