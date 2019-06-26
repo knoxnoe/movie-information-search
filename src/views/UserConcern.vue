@@ -40,7 +40,7 @@
                 <time class="time"></time>
                 <!-- {{ currentDate }} -->
                 <el-button type="text" class="get_followee" @click="getOtherFollowee">他的关注</el-button>
-                <el-button type="text" class="get_article" @click="getOtherArticles">他的文章</el-button>
+                <el-button type="text" class="get_article" @click="getOtherArticles(o.username)">他的文章</el-button>
                 <el-button type="text" class="unfollow" @click="unFollow(o.username)">取消关注</el-button>
               </div>
             </div>
@@ -98,6 +98,7 @@
           start: 0,
           end: 20
         }).then(response => {
+          console.log(response)
           if (response.status === 200) {
             this.followee = response.data
           } else {
@@ -149,7 +150,10 @@
           });
         });
       },
-
+      getOtherArticles(username){
+        this.$router.push({name: 'subBookMark', params: {targetName: username}})
+        this.$cookie.set('subName', username, 1)
+      }
     }
   }
 </script>

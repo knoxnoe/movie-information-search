@@ -68,7 +68,6 @@
 </template>
 <script>
   import aboutList from '@/components/aboutList.vue'
-  // const List = () => import('@/components/list.vue')
   export default {
     components: {
       aboutList

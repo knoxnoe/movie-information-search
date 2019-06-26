@@ -1,11 +1,11 @@
 <template>
   <div class="subUser">
     <h1>{{currentName+ '个人主页'}}</h1>
-    <List :dataList="essaysList" :styles="listEssay"></List>
+    <aboutList :dataList="essaysList"></aboutList>
   </div>
 </template>
 <script>
-  const List = () => import('@/components/list.vue')
+  import aboutList from '@/components/aboutList.vue'
   export default {
     data() {
       return {
@@ -15,7 +15,7 @@
       }
     },
     components: {
-      List
+      aboutList
     },
     mounted() {
       this.currentName = this.$route.params.targetName || this.$store.state.UserState.subName

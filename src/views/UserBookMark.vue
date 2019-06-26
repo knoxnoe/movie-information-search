@@ -62,12 +62,11 @@
       this.getListOfBookMark()
     },
     methods: {
-      getListOfBookMark() {//挂在组件将请求的数据初始化
+      async getListOfBookMark() {//挂在组件将请求的数据初始化
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collections/'
-        this.api.get(PostUrl, {
+        await this.api.get(PostUrl, {
           token: this.$store.state.UserState.token
         }).then(response => {
-          console.log(response)
           if (response.status == 200) {
             if (response.data.length > 0) {
               this.collections = response.data
@@ -80,8 +79,21 @@
             this.$message.error(JSON.stringify(response.statusMessage));
           }
         })
+        this.getFirstEssaysList()//获取第一个收藏夹的文章
       },
-
+      getFirstEssaysList(){
+        var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/' + this.collections[0].id + '/'
+        this.api.get(PostUrl, {
+          token: this.$store.state.UserState.token,
+          collection_id: this.collections[0].id,
+          start: 0,
+          end: 20
+        }).then(response => {
+          if (response.status == 200) {
+            this.BookMarkEssaysList = response.data
+          }
+        })
+      },
       affirmCollection() {//确认创建文件夹信息
         var numPrivate = new Number(this.form.region)
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/'
