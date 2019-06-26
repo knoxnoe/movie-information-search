@@ -38,7 +38,6 @@
               <p>发表文章数：{{ o.article_count }}</p>
               <div class="bottom clearfix">
                 <time class="time"></time>
-                <!-- {{ currentDate }} -->
                 <el-button type="text" class="get_followee" @click="getOtherFollowee">他的关注</el-button>
                 <el-button type="text" class="get_article" @click="getOtherArticles(o.username)">他的文章</el-button>
                 <el-button type="text" class="unfollow" @click="unFollow(o.username)">取消关注</el-button>

@@ -29,7 +29,8 @@
               :trigger-on-focus="false"
               @select="handleSelect">
       </el-autocomplete>
-      <el-upload
+      <!-- 上传图片功能，未上线 -->
+      <!-- <el-upload
               action="https://jsonplaceholder.typicode.com/posts/"
               list-type="picture-card"
               ref="upload"
@@ -41,20 +42,7 @@
         <i class="el-icon-plus"></i>
         <el-button style="margin-top: 10px;display:block;" size="small" type="success" @click="submitUpload">上传到服务器
         </el-button>
-      </el-upload>
-      <!-- <el-upload
-        class="upload-demo"
-        ref="upload"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePictureCardPreview"
-        :on-remove="handleRemove"
-        :file-list="picture-card"
-        :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
       </el-upload> -->
-
       <span slot="footer" class="dialog-footer">
 					<el-button @click="EditingArticlesDialogVisible = false">取 消</el-button>
 					<el-button type="primary" @click="publishArticle">发表</el-button>

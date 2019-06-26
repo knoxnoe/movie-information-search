@@ -188,7 +188,7 @@
         this.$router.push({path: '/user'})
       },
       handleSelect(item) {
-        if (item == '/about') {
+        if (item == '/about' || item == '/find') {
           if (this.$store.state.UserState.logonStatus) {
             this.$router.push({path: item})
             this.saveHashUrl(item)
