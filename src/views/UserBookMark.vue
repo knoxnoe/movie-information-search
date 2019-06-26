@@ -1,6 +1,6 @@
 <template>
   <div class="bookMark">
-    <div style="margin-bottom: 20px;">
+    <div style="margin: 20px;">
       <el-button type="primary" icon="el-icon-folder-add" @click="createCollection()">创建收藏夹</el-button>
     </div>
     <el-tabs v-model="collectionId" type="card" closable @tab-remove="removeCollection" @tab-click="checkCollection">
@@ -11,7 +11,9 @@
               :name="item.id">
         <!-- {{item.content}} -->
         <div>
-          <List :dataList="BookMarkEssaysList" :styles="listEssay"></List>
+          <keep-alive>
+            <essayList :dataList="BookMarkEssaysList" :activeCollection="collectionId"></essayList>
+          </keep-alive>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -36,7 +38,7 @@
   </div>
 </template>
 <script>
-  import List from '@/components/list.vue'
+  import essayList from '@/components/essaysList.vue'
 
   export default {
     data() {
@@ -50,12 +52,11 @@
           region: '',
         },
         formLabelwidth: '120px',
-        listEssay: '_listStyle3',
         BookMarkEssaysList: []
       }
     },
     components: {
-      List
+      essayList
     },
     mounted() {
       this.getListOfBookMark()
@@ -173,8 +174,15 @@
     margin 0
 
   .bookMark
-    padding 20px
-
+    padding 0 20px
+    height 92vh
+    overflow hidden
+  
+  .el-tabs__content
+    height 85vh
+    overflow scroll
+    &::-webkit-scrollbar
+        display none
   .collectionName
     width auto
 </style>

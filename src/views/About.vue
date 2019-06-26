@@ -1,19 +1,20 @@
 <template>
   <div class="about">
     <h1>圈子里的那点事</h1>
-    <List :dataList="aboutLists"></List>
+    <aboutList :dataList="aboutLists"></aboutList>
   </div>
 </template>
 <script>
-  import List from '@/components/list.vue'
+  import aboutList from '@/components/aboutList.vue'
 
   export default {
     components: {
-      List
+      aboutList
     },
     data() {
       return {
-        aboutLists: ''
+        aboutLists: [],
+        start: 0
       }
     },
     mounted() {
@@ -24,8 +25,8 @@
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/feeds'
         this.api.get(PostUrl, {
           token: this.$store.state.UserState.token,
-          start: 0,
-          end: 20
+          start: this.start,
+          end: this.start+5
         }).then(response => {
           if (response.status === 200) {
             this.aboutLists = response.data

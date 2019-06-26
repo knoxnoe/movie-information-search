@@ -1,11 +1,11 @@
 <template>
   <div class="essay">
-    <div style="margin-bottom: 20px;">
+    <div style="margin:20px 0;">
       <el-button type="primary" icon="el-icon-edit-outline" @click="EditingArticlesDialogVisible = true">发表文章
       </el-button>
     </div>
     <keep-alive>
-      <List :dataList="essaysList" :styles="listEssay"></List>
+      <aboutList :dataList="essaysList"></aboutList>
     </keep-alive>
     <el-dialog
             title="编辑文章"
@@ -67,11 +67,11 @@
   </div>
 </template>
 <script>
-  // import List from '@/components/list.vue'
-  const List = () => import('@/components/list.vue')
+  import aboutList from '@/components/aboutList.vue'
+  // const List = () => import('@/components/list.vue')
   export default {
     components: {
-      List
+      aboutList
     },
     data() {
       return {
@@ -83,7 +83,6 @@
         essaysList: [],
         movie: '',
         restaurants: [],
-        listEssay: '_listStyle1',
         movidId: ''
       }
     },
@@ -200,7 +199,9 @@
 </script>
 <style lang="stylus">
   .essay
-    padding 20px 40px
+    padding 0 40px
+    height 92vh
+    overflow hidden
 
   .editContent
     margin-bottom 20px
