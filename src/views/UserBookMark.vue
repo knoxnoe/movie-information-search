@@ -183,19 +183,17 @@
   }
 </script>
 <style lang="stylus">
-  body
-    margin 0
-
-  .bookMark
-    padding 0 20px
-    height 92vh
-    overflow hidden
-  
-  .el-tabs__content
-    height 85vh
-    overflow scroll
-    &::-webkit-scrollbar
-        display none
-  .collectionName
-    width auto
+body
+  margin 0
+.bookMark
+  padding 0 20px
+  height 92vh
+  overflow hidden
+.el-tabs__content
+  height 85vh
+  overflow scroll
+  &::-webkit-scrollbar
+      display none
+.collectionName
+  width auto
 </style>

@@ -212,6 +212,7 @@ body
         display none
 		.list
   		height 100%
+      margin-bottom 100px
 			.list-card
 				margin-top 20px
 				.el-card__header

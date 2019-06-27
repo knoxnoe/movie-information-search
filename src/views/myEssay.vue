@@ -159,6 +159,7 @@
             this.movidId = ''
             if (response.status === 200) {
               this.getArticles()
+              this.textarea = ''
             } else {
               this.$message.error(JSON.stringify(response.statusMessage));
             }
@@ -185,11 +186,10 @@
   }
 </script>
 <style lang="stylus">
-  .essay
-    padding 0 40px
-    height 92vh
-    overflow hidden
-
-  .editContent
-    margin-bottom 20px
+.essay
+  padding 0 40px
+  height 92vh
+  overflow hidden
+.editContent
+  margin-bottom 20px
 </style>
