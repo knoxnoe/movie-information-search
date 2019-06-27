@@ -10,6 +10,7 @@
                 <el-button style="float: right; padding: 3px 0" type="text" @click="uncollect(item.article_id,index)">取消收藏</el-button>
             </div>
             <div class="text item">
+              <p>{{'动态内容 ' + item.content }}</p>
               <img v-if="item.movie != null" :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
               <div class="movieDetail">
                 <div v-if="item.movie != null">
@@ -19,7 +20,6 @@
                   <p>{{'评分：'+ item.movie.rating}}</p>
                   <p>{{'概述：'+item.movie.summary}}</p>
                 </div>
-                <p>{{'内容 ' + item.content }}</p>
                 <!-- <div @click="goArticle(item.article_id)">
                   <el-link>查看全文<i class="el-icon-view el-icon--right"></i></el-link>
                 </div> -->

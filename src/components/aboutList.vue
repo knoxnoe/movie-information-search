@@ -4,12 +4,13 @@
         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
             <div slot="header" class="clearfix">
                 <span class="text">{{ item.created_date.substr(0,10)}}</span>
-                <span class="text" @click="goSubUser(item.user)">{{'  |  '+item.user+'  |  '}}</span>
+                <span class="text" @click="goSubUser(item.user)">{{'  |  '+item.user.username+'  |  '}}</span>
                 <span v-if="item.movie == null" class="text">{{'无电影文章'}}</span>
                 <span v-else class="text">{{'电影：'+item.movie.title}}</span>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="collect(item.article_id)">收藏文章</el-button>
             </div>
             <div class="text item">
+              <p>{{'动态内容 ' + item.content }}</p>
               <img v-if="item.movie != null" :src="'http://movie.sqy.xyz/image/movie/'+(item.movie.id%109)+'/'+(item.movie.id)+'.jpg'" alt="">
               <div class="movieDetail">
                 <div v-if="item.movie != null">
@@ -19,7 +20,6 @@
                   <p>{{'评分：'+ item.movie.rating}}</p>
                   <p>{{'概述：'+item.movie.summary}}</p>
                 </div>
-                <p>{{'内容 ' + item.content }}</p>
                 <!-- <el-link @click="goArticle(item.article_id)">查看全文<i class="el-icon-view el-icon--right"></i></el-link> -->
               </div>
             </div>
