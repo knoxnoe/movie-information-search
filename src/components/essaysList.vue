@@ -20,9 +20,9 @@
                   <p>{{'概述：'+item.movie.summary}}</p>
                 </div>
                 <p>{{'内容 ' + item.content }}</p>
-                <div @click="goArticle(item.article_id)">
+                <!-- <div @click="goArticle(item.article_id)">
                   <el-link>查看全文<i class="el-icon-view el-icon--right"></i></el-link>
-                </div>
+                </div> -->
               </div>
             </div>
           </el-card>
@@ -116,6 +116,7 @@ body
         display none
 		.list
   		height 100%
+      margin-bottom 100px
 			.list-card
 				margin-top 20px
 				.el-card__header

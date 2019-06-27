@@ -71,16 +71,18 @@
     mounted() {//根据home页面传来的值进行搜索
       this.search = this.$route.params.searchText || this.$store.state.UserState.currentSearchText
       this.searchStyle = this.$route.params.searchStyle || this.$store.state.UserState.searchStyle
-      if (this.searchStyle == '1') {//智能搜索
+      if (this.searchStyle == '1') {//智能问答
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/smart_search/'
         this.api.get(PostUrl, {
           query: this.search
         }).then(response => {
-          if (response.status === 200 && response.data[0] != '') {
+          if (response.status === 200 && response.data != "I don't understand") {
             this.rdfdata.push(response.data[0]);
             this.flag = true
-          } else {
-            this.$message.error(JSON.stringify(response.statusMessage));
+          } else{
+            this.$message.error("小神知识库有限，I don't understand");
+            this.flag = false
+            this.$router.push({name: 'home'})
           }
         })
       } else {//知识图谱
@@ -88,11 +90,14 @@
         this.api.get(PostUrl, {
           name: this.search
         }).then(response => {
-          if (response.status === 200 && response.data[0] != '') {
+          console.log(response.data)
+          if (response.status === 200 && response.data[0] != undefined) {
             this.rdfdata.push(response.data[0]);
             this.flag = true
           } else {
-            this.$message.error(JSON.stringify(response.statusMessage));
+            this.$message.error("小神知识库有限，I don't understand");
+            this.flag = false
+            this.$router.push({name: 'home'})
           }
         })
       }

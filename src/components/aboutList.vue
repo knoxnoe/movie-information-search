@@ -20,7 +20,7 @@
                   <p>{{'概述：'+item.movie.summary}}</p>
                 </div>
                 <p>{{'内容 ' + item.content }}</p>
-                <el-link @click="goArticle(item.article_id)">查看全文<i class="el-icon-view el-icon--right"></i></el-link>
+                <!-- <el-link @click="goArticle(item.article_id)">查看全文<i class="el-icon-view el-icon--right"></i></el-link> -->
               </div>
             </div>
           </el-card>
