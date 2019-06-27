@@ -4,7 +4,7 @@
         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
             <div slot="header" class="clearfix">
                 <span class="text">{{ item.created_date.substr(0,10)}}</span>
-                <span class="text" @click="goSubUser(item.user)">{{'  |  '+item.user.username+'  |  '}}</span>
+                <span class="text" @click="goSubUser(item.user.username)">{{'  |  '+item.user.username+'  |  '}}</span>
                 <span v-if="item.movie == null" class="text">{{'无电影文章'}}</span>
                 <span v-else class="text">{{'电影：'+item.movie.title}}</span>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="collect(item.article_id)">收藏文章</el-button>
