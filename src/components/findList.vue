@@ -1,6 +1,6 @@
 <template>
-    <div class="list-noe-find" ref="container">
-      <div class="list" ref="inner">
+    <div class="list-noe-find" ref="container1">
+      <div class="list" ref="inner1">
         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
             <div slot="header" class="clearfix">
                 <span v-if="item.movie == null" class="text">{{'无电影文章'}}</span>
@@ -27,6 +27,8 @@
     </div>
 </template>
 <script>
+let timer = 0
+let lastTime
 export default {
   name: 'findList',
   props:{
@@ -50,16 +52,18 @@ export default {
   },
   mounted(){
     this.list = this.dataList
-    this.$refs.container.addEventListener('scroll', this.scroll)
+    this.$refs.container1.addEventListener('scroll', this.scroll)
   },
   methods:{
     scroll() {
-      let top = this.$refs.container.scrollTop
-      let vh = this.$refs.inner.clientHeight
+      let top = this.$refs.container1.scrollTop
+      let vh = document.body.clientHeight
       let height = this.$refs.loading.offsetTop
       let dis = height - vh - top
-      if(-20 < dis && dis < 20){
-        console.log('fsdfa')
+      lastTime = new Date()
+      var time = lastTime - timer
+      if(-100 < dis && dis < 100 && time > 4000){
+        timer = new Date()
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/recommend/movie/'
         this.api.get(PostUrl,{
             token: this.$store.state.UserState.token,
@@ -70,8 +74,8 @@ export default {
               for(var i in response.data){
                 this.list.push(response.data[i])
               }
+              this.start+=5
             }
-            this.start+=5
         })
       }
     },

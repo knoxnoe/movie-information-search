@@ -39,7 +39,6 @@
 </template>
 <script>
   import essayList from '@/components/essaysList.vue'
-
   export default {
     data() {
       return {
@@ -103,7 +102,6 @@
           name: this.form.name,
           private: numPrivate
         }).then(response => {
-          console.log(response)
           if (response.status == 200) {
             this.addCollection(response.data.name, response.data.id)
           } else {
@@ -118,7 +116,6 @@
       },
       addCollection(targetName, targetId) {//将创建好的进行UI添加
         var newTabName = targetName;
-        //++this.collectionsNum + '';
         this.collections.push({
           title: newTabName,
           name: newTabName,
@@ -168,6 +165,7 @@
       },
 
       checkCollection(item) {
+        this.getListOfBookMark()
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/collection/' + item.$options.propsData.name + '/'
         this.api.get(PostUrl, {
           token: this.$store.state.UserState.token,

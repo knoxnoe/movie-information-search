@@ -46,6 +46,8 @@
     </div>
 </template>
 <script>
+let timer = 0
+let lastTime
 export default {
   name: 'aboutList',
   props:{
@@ -81,10 +83,13 @@ export default {
   methods:{
     scroll() {
       let top = this.$refs.container.scrollTop
-      let vh = this.$refs.inner.clientHeight
+      let vh = document.body.clientHeight
       let height = this.$refs.loading.offsetTop
       let dis = height - vh - top
-      if(-20 < dis && dis < 20){
+      lastTime = new Date()
+      var time = lastTime - timer
+      if(-100 < dis && dis < 100 && time > 4000){
+        timer = new Date()
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/feeds'
         this.api.get(PostUrl, {
           token: this.$store.state.UserState.token,
@@ -93,8 +98,9 @@ export default {
         }).then(response => {
           if (response.status === 200) {
             for(var i in response.data){
-                this.list.push(response.data[i])
+              this.list.push(response.data[i])
             }
+            this.start+=5
           } else {
             this.$message.error(JSON.stringify(response.statusMessage));
           }

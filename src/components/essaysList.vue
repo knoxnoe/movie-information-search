@@ -1,5 +1,5 @@
 <template>
-    <div class="list-noe-essay" ref="container">
+    <div class="list-noe-essay" ref="container2">
       <div class="list" ref="inner">
         <el-card v-for="(item,index) in list" v-bind:key="index" class="list-card"  shadow="hover">
             <div slot="header" class="clearfix">
