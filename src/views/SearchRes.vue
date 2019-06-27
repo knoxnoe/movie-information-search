@@ -71,7 +71,7 @@
     mounted() {//根据home页面传来的值进行搜索
       this.search = this.$route.params.searchText || this.$store.state.UserState.currentSearchText
       this.searchStyle = this.$route.params.searchStyle || this.$store.state.UserState.searchStyle
-      if (this.searchStyle == '1') {//智能搜索
+      if (this.searchStyle == '2') {//智能问答
         var PostUrl = this.$store.state.BaseConfig.httpsUrl + '/api/v1/subject/smart_search/'
         this.api.get(PostUrl, {
           query: this.search
