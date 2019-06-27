@@ -7,7 +7,7 @@
       <el-tab-pane
               v-for="(item, index) in collections"
               :key="item.id"
-              :label="item.name"
+              :label="item.name+'('+(item.private?'私有':'公有')+')'"
               :name="item.id">
         <!-- {{item.content}} -->
         <div>
@@ -67,6 +67,7 @@
         await this.api.get(PostUrl, {
           token: this.$store.state.UserState.token
         }).then(response => {
+          console.log(response)
           if (response.status == 200) {
             if (response.data.length > 0) {
               this.collections = response.data
