@@ -1,23 +1,15 @@
 <template>
   <div>
+    <div v-if="isSummary" class="summary">
+        <p >{{summary}}</p>
+    </div>
     <div id="echartss">
     </div>
-    <!-- <p>{{rdf}}</p>
-    <p>--------------------</p>
-    <div v-for="item in proxydata" :key="item.index">
-        <p>{{item}}</p>
-    </div>
-    <p>--------------------</p>
-    <div v-for="item in proxyedges" :key="item.index">
-        <p>{{item}}</p>
-    </div> -->
   </div>
-
 </template>
 <script>
   import vue from 'vue'
   import echarts from 'echarts'
-
   export default {
     props: {
       rdf: Array,
@@ -25,6 +17,8 @@
     },
     data() {
       return {
+        summary: '',
+        isSummary: false,
         proxydata: [],
         proxydatacopy: [],
         proxyedges: [],
@@ -86,7 +80,7 @@
         //绑定点击事件
         var that = this
         var myChart = echarts.init(document.getElementById('echartss'));
-        myChart.on('click', function (param) {
+        myChart.on('dblclick', function (param) {
           if (param.dataType == 'node') {
             if (param.data.click == false) {
               that.onChartClickmovie(param.data)
@@ -94,6 +88,19 @@
               that.onChartClickperson(param.data)
             }
           }
+        });
+        myChart.on('mouseover', function (param) {
+          that.summary = param.data.summary
+          that.isSummary = true
+          // if (param.dataType == 'node') {
+          //   if (param.data.click == false) {
+          //     console.log(param)
+          //     // that.onChartClickmovie(param.data)
+          //   } else {
+          //     console.log(param)
+          //     // that.onChartClickperson(param.data)
+          //   }
+          // }
         });
         //length不一定存在，后面再说
         if (!this.chart_rdf[0]) return false
@@ -107,7 +114,8 @@
             symbolSize: 40,
             fixd: true,
             click: true,
-            url: this.chart_rdf[0].url
+            url: this.chart_rdf[0].url,
+            summary: this.chart_rdf[0].summary
           })
           that.categorie++
           for (var i = 0; i < this.chart_rdf[0].movies.length; i++) {
@@ -120,7 +128,8 @@
               symbolSize: 40,
               fixd: true,
               click: false,
-              url: this.chart_rdf[0].movies[i].movie.url
+              url: this.chart_rdf[0].movies[i].movie.url,
+              summary: this.chart_rdf[0].movies[i].movie.summary
             })
             this.addEdge({
               source: JSON.stringify(this.chart_rdf[0].id),
@@ -139,7 +148,8 @@
             symbolSize: 40,
             fixd: true,
             click: false,
-            url: this.chart_rdf[0].url
+            url: this.chart_rdf[0].url,
+            summary: this.chart_rdf[0].summary
           })
           that.categorie++
           for (var i = 0; i < this.chart_rdf[0].persons.length; i++) {
@@ -152,7 +162,8 @@
               symbolSize: 40,
               fixd: true,
               click: true,
-              url: this.chart_rdf[0].persons[i].person.url
+              url: this.chart_rdf[0].persons[i].person.url,
+              summary: this.chart_rdf[0].persons[i].person.summary
             })
             this.addEdge({
               source: JSON.stringify(this.chart_rdf[0].id),
@@ -206,7 +217,8 @@
                 symbolSize: 40,
                 fixd: true,
                 click: false,
-                url: temp.movies[i].movie.url
+                url: temp.movies[i].movie.url,
+                summary: temp.movies[i].movie.summary
               })
               that.addEdge({source: JSON.stringify(temp.id), target: JSON.stringify(temp.movies[i].movie.id)})
               that.drawchart()
@@ -233,7 +245,8 @@
                 symbolSize: 40,
                 fixd: true,
                 click: true,
-                url: temp.persons[i].person.url
+                url: temp.persons[i].person.url,
+                summary: temp.persons[i].person.summary
               })
               that.addEdge({source: JSON.stringify(temp.id), target: JSON.stringify(temp.persons[i].person.id)})
               that.drawchart()
@@ -258,6 +271,9 @@
   }
 </script>
 <style lang="stylus">
+  .summary
+    position absolute
+    width 400px
   #echartss
     width 100%
     height 100vh
