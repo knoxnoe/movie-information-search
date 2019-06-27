@@ -7,7 +7,7 @@
       <el-tab-pane
               v-for="(item, index) in collections"
               :key="item.id"
-              :label="item.name+'('+(item.private?'私有':'公有')+')'"
+              :label="item.name"
               :name="item.id">
         <!-- {{item.content}} -->
         <div>
@@ -107,8 +107,10 @@
           if (response.status == 200) {
             this.addCollection(response.data.name, response.data.id)
           } else {
-            this.$message.error(JSON.stringify(response.statusMessage));
+            this.$message.error('出现重复收藏夹名');
           }
+        }).catch(error => {
+          this.$message.error('出现重复收藏夹名');
         })
       },
       createCollection() { //创建收藏夹

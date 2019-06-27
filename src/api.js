@@ -9,7 +9,6 @@ export default {
       }).then(response => {
         resolve(response.data);
       }).catch(error => {
-        alert(url + '\n' + JSON.stringify(error));
         reject(error);
       });
     });
@@ -19,7 +18,6 @@ export default {
       axios.post(url, qs.stringify(params)).then(response => {
         resolve(response.data);
       }).catch(error => {
-        alert(url + '\n' + JSON.stringify(error));
         reject(error);
       });
     });
