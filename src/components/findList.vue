@@ -15,7 +15,8 @@
                   <p>{{'概述 ' + item.movie.summary }}</p>
               </div>
               <div class="movie_person">
-                <span v-for="(userItem,index) in item.users" v-bind:key="index" class="users" @click="goSubUser(userItem.username)">{{userItem.username+'、'}}</span>
+                <span>ta也在关注这个电影：</span>
+                <span v-for="(userItem,index) in item.users" v-bind:key="index" class="users" @click="goSubUser(userItem.username)">{{userItem.username+'|'}}</span>
               </div>
             </div>
         </el-card>
