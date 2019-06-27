@@ -271,11 +271,11 @@
   }
 </script>
 <style lang="stylus">
-  .summary
-    position absolute
-    width 400px
-  #echartss
-    width 100%
-    height 100vh
-    box-sizing border-box
+.summary
+  position absolute
+  width 400px
+#echartss
+  width 100%
+  height 100vh
+  box-sizing border-box
 </style>

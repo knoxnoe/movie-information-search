@@ -95,7 +95,6 @@ body
   		height 100%
 			.list-card
 				margin-top 20px
-				height 520px
 				.el-card__header
 					cursor pointer
 					.clearfix

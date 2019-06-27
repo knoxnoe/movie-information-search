@@ -14,7 +14,7 @@
               </div>
             </div>
             <div class="op">
-              <p>{{'昵称：'+o.user.nickname}}</p>
+              <p>{{'昵称：'+o.user.username}}</p>
               <el-button type="text" class="get_followee" @click="followOne(o.user.username)">关注 TA</el-button>
             </div>
           </el-card>
