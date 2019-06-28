@@ -40,7 +40,7 @@
                 <time class="time"></time>
                 <!-- <el-button type="text" class="get_followee" @click="getOtherFollowee">他的关注</el-button> -->
                 <el-button type="text" class="get_article" @click="getOtherArticles(o.username)">他的文章</el-button>
-                <el-button type="text" class="unfollow" @click="unFollow(o.username)">取消关注</el-button>
+                <el-button type="text" class="unfollow" @click="unFollow(o.username,index)">取消关注</el-button>
               </div>
             </div>
           </el-card>
@@ -121,7 +121,7 @@
       getOtherFollowee() {//获取某人关注
 
       },
-      unFollow(targetName) {
+      unFollow(targetName,index) {
         this.$confirm('确认是否取消关注此人, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -136,8 +136,8 @@
             followee_name: targetName,
             token: this.$store.state.UserState.token
           }).then(response => {
-            console.log(response)
             if (response.status === 200) {
+              this.followee.splice(index,1)
             } else {
               this.$message.error(JSON.stringify(response.statusMessage));
             }
